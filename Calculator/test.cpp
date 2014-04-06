@@ -9,6 +9,6 @@ using namespace std;
 
 int main()
 {
-	cout<<"test";//asdfa
+	cout<<"test";
 }
 
