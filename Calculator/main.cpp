@@ -30,7 +30,7 @@ vector<char> shunt(string expression)
 	vector<char> stack;
 	stack.push_back(' '); //initialize stack, otherwise program crash if the expression does not start with '('
 
-	//Precedence
+	//Precedence of operations
 	int precedenceIn = 0;
 	int precedenceSt = 0;
 	int leftper = 4;
