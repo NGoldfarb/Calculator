@@ -85,33 +85,20 @@ vector<char> shunt(string expression)
 				cout<<"test: "<<input[i];
 				//Precedence of the input
 				switch(input[i]){
-				case '+': precedenceIn = add;
-				break;
-				case '-': precedenceIn = sub;
-				break;
-				case '*': precedenceIn = mult;
-				break;
-				case '/': precedenceIn = div;
-				break;
-				case '^': precedenceIn = exp;
-				break;
-				default: precedenceIn = 0;
-				break;
-				}
+				case '+': precedenceIn = add;	break;
+				case '-': precedenceIn = sub; 	break;
+				case '*': precedenceIn = mult;	break;
+				case '/': precedenceIn = div; 	break;
+				case '^': precedenceIn = exp; 	break;
+				default: precedenceIn = 0;		break;}
 				//Precedence comparing to
 				switch(stack.back()){
-				case '+': precedenceSt = add;
-				break;
-				case '-': precedenceSt = sub;
-				break;
-				case '*': precedenceSt = mult;
-				break;
-				case '/': precedenceSt = div;
-				break;
-				case '^': precedenceSt = exp;
-				break;
-				default: precedenceSt = 0;
-				break;}
+				case '+': precedenceSt = add;	break;
+				case '-': precedenceSt = sub;	break;
+				case '*': precedenceSt = mult;	break;
+				case '/': precedenceSt = div;	break;
+				case '^': precedenceSt = exp;	break;
+				default: precedenceSt = 0;		break;}
 
 				cout<< endl<< "PIn: "<< precedenceIn<<" PSt: "<<precedenceSt;
 
@@ -128,12 +115,12 @@ vector<char> shunt(string expression)
 						stack.pop_back();
 
 						switch(stack.back()){
-						case '+': precedenceSt = add; break;
-						case '-': precedenceSt = sub; break;
-						case '*': precedenceSt = mult; break;
-						case '/': precedenceSt = div; break;
-						case '^': precedenceSt = exp; break;
-						default: precedenceSt = 0; break;}
+						case '+': precedenceSt = add;	break;
+						case '-': precedenceSt = sub;	break;
+						case '*': precedenceSt = mult; 	break;
+						case '/': precedenceSt = div;	break;
+						case '^': precedenceSt = exp; 	break;
+						default: precedenceSt = 0; 		break;}
 					}
 					stack.push_back(input[i]);
 				}
