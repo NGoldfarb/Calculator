@@ -24,6 +24,7 @@ void printVectorChar(vector<char> toPrint)
 
 vector<char> shunt(string expression)
 {
+	//Algorithm on http://en.wikipedia.org/wiki/Shunting-yard_algorithm used for reference
 
 	vector<char> input;
 	vector<char> output;
@@ -62,72 +63,95 @@ vector<char> shunt(string expression)
 		{
 			output.push_back(input[i]);
 		}
+
 		//Put the digit in the output stack
 		else if (isdigit(input[i]))
 		{
 			output.push_back(input[i]);
 		}
+
 		//If an operator
 		else if(input[i] == '+'||input[i] == '-'||input[i] == '*'||input[i] == '/'||input[i] == '^')
 		{
 			//No operators on the stack
-			if(stack.back() != '+'||stack.back() != '-'||stack.back() != '*'||stack.back() != '/'||stack.back() != '^')
+			if(stack.back() != '+'&&stack.back() != '-'&&stack.back() != '*'&&stack.back() != '/'&&stack.back() != '^')
 			{
-				stack.push_back(' ');
 				stack.push_back(input[i]);
 			}
-			//While there is an operator on the operator stack
+
+			//There is a operator on the stack
 			else
 			{
-			while(stack.back() == '+'||stack.back() == '-'||stack.back() == '*'||stack.back() == '/'||stack.back() == '^')
-			{
+				cout<<"test: "<<input[i];
 				//Precedence of the input
 				switch(input[i]){
-				case '+': precedenceIn = add; break;
-				case '-': precedenceIn = sub; break;
-				case '*': precedenceIn = mult; break;
-				case '/': precedenceIn = div; break;
-				case '^': precedenceIn = exp; break;
-				default: precedenceIn = 0; break;
+				case '+': precedenceIn = add;
+				break;
+				case '-': precedenceIn = sub;
+				break;
+				case '*': precedenceIn = mult;
+				break;
+				case '/': precedenceIn = div;
+				break;
+				case '^': precedenceIn = exp;
+				break;
+				default: precedenceIn = 0;
+				break;
 				}
 				//Precedence comparing to
 				switch(stack.back()){
-				case '+': precedenceSt = add; break;
-				case '-': precedenceSt = sub; break;
-				case '*': precedenceSt = mult; break;
-				case '/': precedenceSt = div; break;
-				case '^': precedenceSt = exp; break;
-				default: precedenceSt = 0; break;
+				case '+': precedenceSt = add;
+				break;
+				case '-': precedenceSt = sub;
+				break;
+				case '*': precedenceSt = mult;
+				break;
+				case '/': precedenceSt = div;
+				break;
+				case '^': precedenceSt = exp;
+				break;
+				default: precedenceSt = 0;
+				break;}
 
-				}
+				cout<< endl<< "PIn: "<< precedenceIn<<" PSt: "<<precedenceSt;
 
-				if(precedenceIn >= precedenceSt) //Input is of higher precendence
+				//Input is of higher or equal precendence
+				if(precedenceIn > precedenceSt)
 				{
 					stack.push_back(input[i]); //Just put it on top of what is there
 				}
+				//Input is of lesser precedence
+				else{
+					while(precedenceIn <= precedenceSt)
+					{
+						output.push_back(stack.back());
+						stack.pop_back();
 
-				if(precedenceIn < precedenceSt) //Input is of lesser precedence
-				{
-					//TODO
+						switch(stack.back()){
+						case '+': precedenceSt = add; break;
+						case '-': precedenceSt = sub; break;
+						case '*': precedenceSt = mult; break;
+						case '/': precedenceSt = div; break;
+						case '^': precedenceSt = exp; break;
+						default: precedenceSt = 0; break;}
+					}
+					stack.push_back(input[i]);
 				}
 			}
-			}
-
 		}
+
 		//Input is a left peren
 		else if (input[i] == '(')
 		{
 			stack.push_back(input[i]);
 		}
+
 		//Input is a right peren
 		else if (input[i] == ')')
 		{
 			while(stack.back() != '(')
 			{
-				if(isdigit(output.back())) //Add a space before the operators
-				{
-					output.push_back(' ');
-				}
+				output.push_back(' ');
 				output.push_back(stack.back());
 				stack.pop_back();
 			}
@@ -135,22 +159,19 @@ vector<char> shunt(string expression)
 			{
 				stack.pop_back();
 			}
-			if(stack.back() == '+'||stack.back() == '-'||stack.back() == '*'||stack.back() == '/'||stack.back() == '^')
+			else if(stack.back() == '+'||stack.back() == '-'||stack.back() == '*'||stack.back() == '/'||stack.back() == '^')
 			{
+				output.push_back(' ');
 				output.push_back(stack.back());
 				stack.pop_back();
 			}
 		}
 	}
 
-	if(output.back() != ' ')
-	{
-		output.push_back(' ');
-		cout<<"space";
-	}
 	int size = stack.size();
 	for(int i = 0; i < size; i++)
 	{
+		output.push_back(' ');
 		output.push_back(stack.back());
 		stack.pop_back();
 	}
@@ -162,10 +183,12 @@ vector<char> shunt(string expression)
 
 int main()
 {
-	string in = "1 + 12 * 2 ^ 1 / 2 + 3";
+	string in = "1 - (3 + 2) ^ 3 / 5 + 3";
 	vector<char> test;
 	test = shunt(in);
-	cout<<endl<<"Final:  ";
+	cout<<endl<<"Input:  "<<in<<endl;
+
+	cout<<"Final:  ";
 	printVectorChar(test);
 
 	return 0;
