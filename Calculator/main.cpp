@@ -277,7 +277,7 @@ vector<char> shunt(string expression)
 						k++;
 					}
 					k = 0;
-					while(k < 3)	// Cant be done in the same while loop since we still need the information being popped
+					while(k < 3)	// Can't be done in the same while loop since we still need the information being popped
 					{
 						stack.pop_back();
 						k++;
