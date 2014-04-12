@@ -408,44 +408,43 @@ vector<char> shunt(string expression)
 
 int main()
 {
-	string in = "a";
+	/*string in = "a";
 	vector<char> test;
 	test = shunt(in);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
 	cout<<"Final:  ";
-	printVectorChar(test);
+	printVectorChar(test);*/
 
-	/*
+
 	cout<<"If this is your first time using this calculator please check out \"Help\""<<endl;
 	while(true)
 	{
 		string in;
+		string blah;
 		vector<char> test;
-		int selection = 0;
-		cout<<endl<<"1. Input your expression"<<
+		char selection = '0';
+		cout<<endl<<endl<<"1. Input your expression"<<
 		endl<<"2. Past results and set ANS"<<
 		endl<<"3. Help"<<
 		endl<<"0. Quit"<<
 		endl<<endl<<"Input your selection: ";
 		cin >> selection;
-
-		switch(selection){
-		case 1: cout<<"Input your expression: ";
-						//cin.getline(in, in.size());
+		cin.ignore();
+		switch(selection)
+		{
+		case '1': cout<<"Input your expression: ";
+						getline(cin, in);
 						test = shunt(in);
 						cout<<endl<<endl<<"Input:  "<<in<<endl;
 						cout<<"Final:  ";
 						printVectorChar(test);break;
-		case 2: cout<<"Under construction!"; break;//memory()
-		case 3: cout<<"Under construction!"; break;//help()
-		case 0: cout<<endl<<"Good bye!"; return 0;
-		default: cout<<"You did not input a valid selection!"; break;
-
-
-
+		case '2': cout<<"Under construction!"<<endl; break;//memory()
+		case '3': cout<<"Under construction!"<<endl; break;//help()
+		case '0': cout<<endl<<"Good bye!"; return 0;
+		default: cout<<"You did not input a valid selection!"<<endl; break;
 		}
 
-	}*/
+	}
 
 	return 0;
 
