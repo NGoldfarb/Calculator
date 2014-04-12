@@ -18,7 +18,7 @@ void printVectorChar(vector<char> toPrint)
 }
 
 
-vector<char> shunt(string expression)
+vector<char> shunt(string expression, bool debug)
 {
 	//Algorithm on http://en.wikipedia.org/wiki/Shunting-yard_algorithm used for reference
 
@@ -31,6 +31,7 @@ vector<char> shunt(string expression)
 	string erLog = ": You did not input the log operator correctly!";
 	string erPer = ": Unbalanced parentheses!";
 	string erNotValid = ": You entered an invalid character!";
+	string erPi = ": Enter pi as pi and not p.";
 	int j = 0;
 
 	stack.push_back(' '); //initialize stack, otherwise program crash if the expression does not start with '('
@@ -68,18 +69,25 @@ vector<char> shunt(string expression)
 		bool log = false;
 		bool nrt = false;
 
+		if(debug)
 		cout<< endl<< j;
 		j++;
+
+		if(debug)
+		{
 		cout<<endl<<"Input["<<i<<"]: "<<input[i];
 		cout<< endl<< "stack: ";
 		printVectorChar(stack);
 		cout<< endl << "output: ";
 		printVectorChar(output);
+		}
 
+		//check if valid
 		if(!isdigit(input[i])&&input[i] != '+'&&input[i] != '-'&&input[i] != '*'&&input[i] != '/'
 				&&input[i] != 's'&&input[i] != 'q'&&input[i] != 'r'&&input[i] != 't'&&input[i] != 'l'
 						&&input[i] != 'o'&&input[i] != 'g'&&input[i] != '_'&&input[i] != ':'&&input[i] != '^'
-								&&input[i] != 'r'&&input[i] != 't'&&input[i] != ' '&&input[i] != '('&&input[i] != ')')
+								&&input[i] != 'r'&&input[i] != 't'&&input[i] != ' '&&input[i] != '('&&input[i] != ')'
+										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e')
 		{
 			for(int j = 0; (unsigned int)j < erNotValid.size(); j++)
 			{
@@ -136,12 +144,27 @@ vector<char> shunt(string expression)
 		//Put the digit in the output stack
 		else if ((isdigit(input[i])||input[i] == 'e' || (input[i] == 'p'&&input[i+1] == 'i'))&&!nrt)
 		{
-			output.push_back(input[i]);
-			if(input[i] == 'p'&&input[i+1] == 'i')
+			if(input[i] == 'p')
 			{
+				if(input[i+1] == 'i')
+				{
+				output.push_back(input[i]);
 				output.push_back(input[i+1]);
 				pi = true;
+				}
+				else
+				{
+					for(int i = 0; (unsigned int)i < erPi.size(); i++)
+					{
+							error.push_back(erPi[i]);
+					}
+					return error;
+				}
 			}
+			else
+				output.push_back(input[i]);
+
+
 		}
 
 		//If an operator
@@ -159,11 +182,6 @@ vector<char> shunt(string expression)
 				{
 					stack.push_back('l');
 					stack.push_back('b');
-					//base
-					if(pi)
-					{
-						stack.push_back('p');
-					}
 				}
 				else if(nrt)
 				{
@@ -207,6 +225,7 @@ vector<char> shunt(string expression)
 				if(stack[stack.size()-2] == 'r')
 					precedenceSt = exp;
 
+				if(debug)
 				cout<<endl<<"Pin: "<<precedenceIn<<" Pst: "<<precedenceSt;
 
 				//Input is of higher or equal precendence
@@ -332,6 +351,7 @@ vector<char> shunt(string expression)
 				}
 			}
 		}
+		if(debug)
 		cout<<endl<<sqrt<<pi<<log<<nrt;
 		if(sqrt)
 			i = i+4; //move 4 spaces over since sqrt is taken care of
@@ -365,7 +385,6 @@ vector<char> shunt(string expression)
 		}
 		else if(stack[stack.size()-2] == 'r')	//nrt
 		{
-			cout<<"test";
 			output.push_back(' ');
 			int k = 0;
 			while(k < 3)
@@ -404,16 +423,90 @@ vector<char> shunt(string expression)
 	return output;
 }
 
+void help()
+{
+	char selection;
+	while(true)
+	{
+	cout<<endl<<"What do you need help with?"<<endl;
+	cout<<"1. Operators"
+		<<endl<<"2. Square root"
+		<<endl<<"3. N root"
+		<<endl<<"4. Logarithms"
+		<<endl<<"5. Examples"
+		<<endl<<"0. Quit";
+	cout<<endl<<endl<<"Input your selection: ";
+	cout<<endl;
+	cin>>selection;
+	cin.ignore();
 
+	switch(selection)
+	{
+	case '1': cout<<"When using operators, such as + - * / ^ make sure to put a space between the operator"
+			" and the numbers being operated on, parentheses do not need spaces."
+			<<endl<<"Example: 1 + 2 or (4 / 2)"<<endl;	break;
+
+	case '2': cout<<"To take the square root of a number input sqrt:n where n is the number you"
+			" want to take the square root of."<<endl<<"Example: sqrt:4"<<endl;	break;
+
+	case '3': cout<<"To take the N root of a number input nrt:a where n is the root and a is the number"
+			" you are taking the root of."<<endl<<"Example: 2rt:4 or 3rt:9"<<endl;	break;
+
+	case '4': cout<<"To find the logarithm of a number input log_b:n where b is the base and n is the number"
+			" you are taking the logarithm of."<<endl<<"Example: log_2:4"<<endl;	break;
+
+	case '5': cout<<"Here are some example inputs for this calculator:"<<endl<<"(1 + 2) / 3"<<endl<<"sqrt:4 + log_2:4"
+			<<endl<<"2 ^ (10 / 2) * 4rt:16"<<endl;	break;
+	case '0': cout<<"Have fun!"<<endl; return;
+	default : cout<<"That is not a valid selection!"<<endl; break;
+	}
+	}
+
+}
+
+void mode(bool &debug)
+{
+	char selection;
+	while(true)
+	{
+		cout<<"Available modes:"
+			<<endl<<"1. Debug"
+			<<endl<<"0. Quit"<<endl;
+		cout<<endl<<"Input your selection: ";
+		cin>>selection;
+		cin.ignore();
+
+		switch(selection)
+		{
+		case '1': if(debug == true)
+				  {
+					  debug = false;
+					  cout<<endl<<"Debug mode has been turned off."<<endl;;
+				  }
+				  else
+				  {
+					  debug = true;
+					  cout<<endl<<"Debug mode has been tuned on."<<endl;;
+				  }
+					break;
+		case '0': cout<<endl<<"Have fun!"<<endl;
+				cout<<debug; return;
+		default : cout<<endl<<"That is not a valid selection!"<<endl; break;
+		}
+
+	}
+}
 
 int main()
 {
-	/*string in = "a";
+	string in = "1 + 2 + pi + e";
 	vector<char> test;
-	test = shunt(in);
+	test = shunt(in, true);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
 	cout<<"Final:  ";
-	printVectorChar(test);*/
+	printVectorChar(test);
+
+	/*bool debug  = false;
 
 
 	cout<<"If this is your first time using this calculator please check out \"Help\""<<endl;
@@ -422,10 +515,12 @@ int main()
 		string in;
 		string blah;
 		vector<char> test;
-		char selection = '0';
-		cout<<endl<<endl<<"1. Input your expression"<<
+		char selection;
+		cout<<endl<<"What do you want to do?";
+		cout<<endl<<"1. Input your expression"<<
 		endl<<"2. Past results and set ANS"<<
 		endl<<"3. Help"<<
+		endl<<"4. Change modes"<<
 		endl<<"0. Quit"<<
 		endl<<endl<<"Input your selection: ";
 		cin >> selection;
@@ -434,17 +529,18 @@ int main()
 		{
 		case '1': cout<<"Input your expression: ";
 						getline(cin, in);
-						test = shunt(in);
-						cout<<endl<<endl<<"Input:  "<<in<<endl;
+						test = shunt(in, debug);
+						cout<<endl<<"Input:  "<<in<<endl;
 						cout<<"Final:  ";
 						printVectorChar(test);break;
 		case '2': cout<<"Under construction!"<<endl; break;//memory()
-		case '3': cout<<"Under construction!"<<endl; break;//help()
+		case '3': help(); break;//help()
+		case '4': mode(debug); break;
 		case '0': cout<<endl<<"Good bye!"; return 0;
 		default: cout<<"You did not input a valid selection!"<<endl; break;
 		}
 
-	}
+	}*/
 
 	return 0;
 
