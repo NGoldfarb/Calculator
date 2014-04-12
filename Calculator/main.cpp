@@ -30,6 +30,7 @@ vector<char> shunt(string expression)
 	string erSqrt = ": You did not input the square root operator correctly!";
 	string erLog = ": You did not input the log operator correctly!";
 	string erPer = ": Unbalanced parentheses!";
+	string erNotValid = ": You entered an invalid character!";
 	int j = 0;
 
 	stack.push_back(' '); //initialize stack, otherwise program crash if the expression does not start with '('
@@ -44,6 +45,7 @@ vector<char> shunt(string expression)
 	//Precedence of operations
 	int precedenceIn = 0;
 	int precedenceSt = 0;
+	int peren = 4;
 	int logpre = 3;
 	int exp = 3;
 	int mult = 2;
@@ -74,6 +76,18 @@ vector<char> shunt(string expression)
 		cout<< endl << "output: ";
 		printVectorChar(output);
 
+		if(!isdigit(input[i])&&input[i] != '+'&&input[i] != '-'&&input[i] != '*'&&input[i] != '/'
+				&&input[i] != 's'&&input[i] != 'q'&&input[i] != 'r'&&input[i] != 't'&&input[i] != 'l'
+						&&input[i] != 'o'&&input[i] != 'g'&&input[i] != '_'&&input[i] != ':'&&input[i] != '^'
+								&&input[i] != 'r'&&input[i] != 't'&&input[i] != ' '&&input[i] != '('&&input[i] != ')')
+		{
+			for(int j = 0; (unsigned int)j < erNotValid.size(); j++)
+			{
+					error.push_back(erNotValid[j]);
+			}
+			return error;
+		}
+
 		//check for sqrt:n
 		if(input[i] == 's')
 		{
@@ -93,11 +107,10 @@ vector<char> shunt(string expression)
 
 		//check for log
 		if(input[i] == 'l')
-		{																	//base is a digit/e/pi
-			if(input[i+1] == 'o'&&input[i+2] == 'g'&&input[i+3] == '_'&&(isdigit(input[i+4])||input[i+4] == 'e'||(input[i+4] == 'p'&&input[i+5] == 'i'))&&(input[i+5] == ':'||input[i+6] == ':'))
+		{	//base is a digit/e/pi
+			/*&&(isdigit(input[i+4])||input[i+4] == 'e'||(input[i+4] == 'p'&&input[i+5] == 'i'))&&(input[i+5] == ':'||input[i+6] == ':')*/
+			if(input[i+1] == 'o'&&input[i+2] == 'g'&&input[i+3] == '_')
 			{
-				if(input[i+4] == 'p'&&input[i+5] == 'i')	//Log has base pi
-					pi = true;
 				log = true;
 			}
 			else
@@ -115,9 +128,9 @@ vector<char> shunt(string expression)
 			nrt = true;
 
 		//Put a space in the output stack
-		if (input[i] == ' '&& output.back()!= ' ')
+		if ((input[i] == ' '||input[i] == ':')&& output.back()!= ' ')
 		{
-			output.push_back(input[i]);
+			output.push_back(' ');
 		}
 
 		//Put the digit in the output stack
@@ -151,8 +164,6 @@ vector<char> shunt(string expression)
 					{
 						stack.push_back('p');
 					}
-					else
-						stack.push_back(input[i+4]);
 				}
 				else if(nrt)
 				{
@@ -174,6 +185,7 @@ vector<char> shunt(string expression)
 				case '*': precedenceIn = mult;	break;
 				case '/': precedenceIn = div; 	break;
 				case '^': precedenceIn = exp; 	break;
+				//case '(': precedenceIn = peren; break;
 				case 's': if(sqrt){precedenceIn = exp;} break;
 				case 'l': if(log){precedenceIn = logpre;} 	break;
 				default: precedenceIn = 0;		break;}
@@ -187,9 +199,10 @@ vector<char> shunt(string expression)
 				case '/': precedenceSt = div;	break;
 				case '^': precedenceSt = exp;	break;
 				case 's': precedenceSt = exp;   break;
+				//case '(': precedenceSt = peren; break;
 				default: precedenceSt = 0;		break;}
 				//check if log and nrt in stack since it cant be checked in the switch
-				if(stack[stack.size()-3] == 'l')
+				if(stack[stack.size()-2] == 'l')
 					precedenceSt = logpre;
 				if(stack[stack.size()-2] == 'r')
 					precedenceSt = exp;
@@ -203,13 +216,6 @@ vector<char> shunt(string expression)
 					{
 						stack.push_back('l');
 						stack.push_back('b');
-						//base
-						if(pi)
-						{
-							stack.push_back('p');
-						}
-						else
-							stack.push_back(input[i+4]);
 					}
 					else if(nrt)
 					{
@@ -226,7 +232,7 @@ vector<char> shunt(string expression)
 					{
 						if(output.back() != ' ')
 							output.push_back(' ');	//formatting
-						if(stack[stack.size()-3] == 'l'||stack[stack.size()-2] == 'r')	// log or nrt
+						if(stack[stack.size()-2] == 'r')	//nrt
 						{
 							int k = 0;
 							while(k < 3)
@@ -236,6 +242,21 @@ vector<char> shunt(string expression)
 							}
 							k = 0;
 							while(k < 3)	// Cant be done in the same while loop since we still need the information being popped
+							{
+								stack.pop_back();
+								k++;
+							}
+						}
+						else if(stack[stack.size()-2] == 'l')
+						{
+							int k = 0;
+							while(k < 2)
+							{
+								output.push_back(stack[stack.size()-2+k]);
+								k++;
+							}
+							k = 0;
+							while(k < 2)	// Cant be done in the same while loop since we still need the information being popped
 							{
 								stack.pop_back();
 								k++;
@@ -254,9 +275,10 @@ vector<char> shunt(string expression)
 						case '/': precedenceSt = div;	break;
 						case '^': precedenceSt = exp; 	break;
 						case 's': precedenceSt = exp;	break;
+						//case '(': precedenceSt = peren; break;
 						default: precedenceSt = 0; 		break;}
 						//check if log in stack since it cant be checked in the switch
-						if(stack[stack.size()-3] == 'l')
+						if(stack[stack.size()-2] == 'l')
 							precedenceSt = logpre;
 						if(stack[stack.size()]-2 == 'r')
 							precedenceSt = exp;
@@ -287,16 +309,16 @@ vector<char> shunt(string expression)
 			}
 			else if(stack.back() == '+'||stack.back() == '-'||stack.back() == '*'||stack.back() == '/'||stack.back() == '^'||stack.back() == 's'||stack[stack.size()-3]=='l')
 			{
-				if(stack[stack.size()-3] == 'l')
+				if(stack[stack.size()-2] == 'l')
 				{
 					int k = 0;
-					while(k < 3)
+					while(k < 2)
 					{
-						output.push_back(stack[stack.size()-3+k]);
+						output.push_back(stack[stack.size()-2+k]);
 						k++;
 					}
 					k = 0;
-					while(k < 3)	// Can't be done in the same while loop since we still need the information being popped
+					while(k < 2)	// Can't be done in the same while loop since we still need the information being popped
 					{
 						stack.pop_back();
 						k++;
@@ -316,7 +338,7 @@ vector<char> shunt(string expression)
 		if(pi)
 			i++;
 		if(log)
-			i = i+5;
+			i = i+3;
 		if(nrt)
 			 i = i+3;
 
@@ -325,17 +347,17 @@ vector<char> shunt(string expression)
 	int size = stack.size();
 	for(int i = 0; i < size; i++)
 	{
-		if(stack[stack.size()-3] == 'l')	// log
+		if(stack[stack.size()-2] == 'l')	// log
 		{
 			output.push_back(' ');
 			int k = 0;
-			while(k < 3)
+			while(k < 2)
 			{
-				output.push_back(stack[stack.size()-3+k]);
+				output.push_back(stack[stack.size()-2+k]);
 				k++;
 			}
 			k = 0;
-			while(k < 3)	// Cant be done in the same while loop since we still need the information being popped
+			while(k < 2)	// Cant be done in the same while loop since we still need the information being popped
 			{
 				stack.pop_back();
 				k++;
@@ -386,7 +408,7 @@ vector<char> shunt(string expression)
 
 int main()
 {
-	string in = "(1 + sqrt:25) / 2 + 4rt:16 + log_2:3 * 3rt:3";
+	string in = "a";
 	vector<char> test;
 	test = shunt(in);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
