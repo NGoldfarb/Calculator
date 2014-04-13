@@ -567,7 +567,7 @@ Number* evalShunt(vector<char> expression)
 	if(expression[0] == 'E' && expression[1] == 'R' && expression[2] == 'R' && expression[3] == 'O' && expression[4] == 'R')
 	{
 		printVectorChar(expression);
-		Basic* error = new Basic(-1);   //probably should find something better to do for this
+		Basic* error = new Basic(34404);   //probably should find something better to do for this
 		return error;
 	}
     vector<Number*> stack;
@@ -599,14 +599,16 @@ Number* evalShunt(vector<char> expression)
         else if (expression[i] == 'e')  //if next token is e
         {
             /*Number* y = new Basic(1);
-            Number* e = new Irrational('e',y,y);   //update when irrational constructor known
+            Number* z = new Basic(1)
+            Number* e = new Irrational('e', y, z);   //update when irrational constructor known
             stack.push_back(e);
             i += 2;*/
         }
         else if (expression[i] == 'p')  //if next token is pi
         {
-            /* y = new Basic(1);
-            Number* pi = new Irrational('p', y, y);  //assuming irrational(isPi)
+            /* Number * y = new Basic(1);
+            Number* z = new Basic(1)
+            Number* pi = new Irrational('p', y, z);  //assuming irrational(isPi)
             stack.push_back(pi);
             i += 3;*/
         }
@@ -696,7 +698,7 @@ Number* evalShunt(vector<char> expression)
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
-                    Number* num3 = num1->expo(num2);
+                    Number* num3 = num2->expo(num1);
                     stack.push_back(num3);
                     i += 2;
                 }
@@ -777,7 +779,7 @@ Number* evalShunt(vector<char> expression)
 int main()
 {
 	//for testing
-	string in = "33 / 55";
+	string in = "7 / (3 / 4)";
 	vector<char> test;
 	test = shunt(in, false);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;

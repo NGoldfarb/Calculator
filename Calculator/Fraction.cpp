@@ -34,20 +34,32 @@ Number* Fraction::getDen(){
 
 Number* Fraction::add(Number* a){
 
-    if (a->getType() == "fraction"){
+    if (a->getType() == "Fraction"){
         Number* x = new Basic(denominator->getValue()*a->getDen()->getValue());
         Number* y = new Basic(numerator->getValue()*a->getDen()->getValue() + denominator->getValue()*a->getNum()->getValue());
         Number* z = new Fraction(y, x);
+        delete a;
+        delete this;
+        z->simplify();
         return z;
         }
+    else //currently only for type Basic
+    {
+    	Number* x = new Basic(numerator->getValue() + a->getValue()*denominator->getValue());
+    	Number* y = new Basic(denominator->getValue());
+    	Number* z = new Fraction(x, y);
+    	delete a;
+    	delete this;
+    	return z;   //don't need to simplify in this case
+    }
 
 
-    else{ return this; }
+    //else{ return this; }
 }
 
 Number* Fraction::subtract(Number* a){
 
-    if (a->getType() == "fraction"){
+    if (a->getType() == "Fraction"){
         Number* x = new Basic(denominator->getValue()*a->getDen()->getValue());
         Number* y = new Basic(numerator->getValue()*a->getDen()->getValue() - denominator->getValue()*a->getNum()->getValue());
         Number* z = new Fraction(y, x);
@@ -57,18 +69,20 @@ Number* Fraction::subtract(Number* a){
 }
 
 Number* Fraction::multiply(Number* a){
-    if (a->getType() == "fraction"){
+    if (a->getType() == "Fraction"){
         Basic* x1 = new Basic(numerator->getValue()*a->getNum()->getValue());
         Basic* x2 = new Basic(denominator->getValue()*a->getDen()->getValue());
         Number* n = new Fraction(x1, x2);
+        delete a;
+        delete this;
         n->simplify();
         return n;
     }
 
-    if (a->getType() == "basic"){
+    else if (a->getType() == "Basic"){
         Basic* b = new Basic(a->getValue()*numerator->getValue());
-        Number* x = b;
-        Number* f = new Fraction(x, denominator);
+        Basic* c = new Basic(denominator->getValue());
+        Number* f = new Fraction(b, c);
         f->simplify();
         return f;
     }

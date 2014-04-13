@@ -10,10 +10,22 @@ Basic::~Basic()
 }
 
 Number* Basic::add(Number* n){
-    Basic* x = new Basic(value + n->getValue());
-    delete n;
-    delete this;
-    return x;
+    if(n->getType() == "Basic")
+    {
+    	Basic* x = new Basic(value + n->getValue());
+    	delete n;
+    	delete this;
+    	return x;
+   	}
+    else   //currently only for n->getType() == "Fraction"
+    {
+    	Number* x = new Basic(n->getNum()->getValue() + value*n->getDen()->getValue());
+    	Number* y = new Basic(n->getDen()->getValue());
+    	Number* z = new Fraction(x, y);
+    	delete n;
+    	delete this;
+    	return z;
+    }
 }
 
 Number* Basic::subtract(Number* n){
@@ -38,26 +50,36 @@ Number* Basic::multiply(Number* n){  //updated for when n is a fraction
     	Fraction* z = new Fraction(x, y);
     	delete n;
     	delete this;
+    	z->simplify();
     	return z;
     }
 }
 
 Number* Basic::divide(Number* n){   //only works for Basics
-    if (value%n->getValue() == 0){
-        Basic* x = new Basic(value / n->getValue());
-        delete n;
-        delete this;
-        return x;
+    if(n->getType() == "Basic")
+    {
+    	if (value%n->getValue() == 0)
+    	{
+    		Basic* x = new Basic(value / n->getValue());
+    		delete n;
+    		delete this;
+    		return x;
+    	}
+    	else
+    	{
+    		Number* a = new Fraction(this, n);
+    		a->simplify();
+    		return a;
+    	}
     }
-
-    else{
-        Basic* y = new Basic(n->getValue());
-        Number* a = new Fraction(this, y);
-        delete n;
-        a->simplify();
-        return a;
-
+    else if (n->getType() == "Fraction")
+    {
+        Number* temp = n->getNum();
+        n->setNum(n->getDen());
+        n->setDen(temp);
+        return multiply(n);
     }
+    return n;
 }
 
 Number* Basic::expo(Number* n){  //needs further implentation if the parameter number is not a basic or is negative etc
