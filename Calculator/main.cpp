@@ -29,24 +29,9 @@ vector<char> shunt(string expression, bool debug)
 	vector<char> input;
 	vector<char> output;
 	vector<char> stack;
-	vector<char> error;
-	string ERROR		 = "ERROR: ";
-	string erSqrt		 = "You did not input the square root operator correctly! Input as sqrt:n!";
-	string erLog		 = "You did not input the log operator correctly! Input as log_b:n!";
-	string erPer 		 = "Unbalanced parentheses!";
-	string erNotValid	 = "You entered an invalid character!";
-	string erPi 		 = "Enter pi as pi and not p!";
-	string erI			 = "No complex numbers!";
-	string erNrt		 = "That is not valid n for nrt! Integers only!";
 	int j = 0;
 
 	stack.push_back(' '); //initialize stack, otherwise program crash if the expression does not start with '('
-
-	for(int i = 0; (unsigned int)i < ERROR.size(); i++)
-	{
-			error.push_back(ERROR[i]);
-	}
-
 
 
 	//Precedence of operations
@@ -55,7 +40,7 @@ vector<char> shunt(string expression, bool debug)
 	int logpre = 3;
 	int exp = 3;
 	int mult = 2;
-	int div = 2;
+	int div = 2;//asdfa
 	int sub = 1;
 	int add = 1;
 
@@ -73,6 +58,7 @@ vector<char> shunt(string expression, bool debug)
 		bool pi = false;
 		bool log = false;
 		bool nrt = false;
+		bool neg = false;
 
 		if(debug)
 		cout<< endl<< j;
@@ -94,12 +80,15 @@ vector<char> shunt(string expression, bool debug)
 								&&input[i] != 'r'&&input[i] != 't'&&input[i] != ' '&&input[i] != '('&&input[i] != ')'
 										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e')
 		{
-			for(int j = 0; (unsigned int)j < erNotValid.size(); j++)
-			{
-					error.push_back(erNotValid[j]);
-			}
-			return error;
+			throw invalid_argument("You entered an invalid character!");
 		}
+
+		//check for negative number
+		if(input[i] == '-'&&(isdigit(input[i+1])||input[i+1] == 'p'||input[i+1] == 'e'))
+		{
+			neg = true;
+		}
+
 
 		//check for sqrt:n
 		if(input[i] == 's')
@@ -109,12 +98,13 @@ vector<char> shunt(string expression, bool debug)
 				sqrt = true;
 			}
 			else
+			{	//sqrt not input properly
+				throw invalid_argument("You did not input the square root operator correctly! Input as sqrt:n!");
+			}
+			//check for negative number
+			if(input[i+5] == '-')
 			{
-				for(int i = 0; (unsigned int)i < erSqrt.size(); i++)
-				{
-						error.push_back(erSqrt[i]);
-				}
-				return error;
+				throw invalid_argument("You can't take the square root of a negative number!");
 			}
 		}
 
@@ -126,12 +116,8 @@ vector<char> shunt(string expression, bool debug)
 				log = true;
 			}
 			else
-			{
-				for(int i = 0; (unsigned int)i < erLog.size(); i++)
-				{
-						error.push_back(erLog[i]);
-				}
-				return error;
+			{	//log not input properly
+				throw invalid_argument("You can't take the square root of a negative number!");
 			}
 		}
 
@@ -140,19 +126,11 @@ vector<char> shunt(string expression, bool debug)
 		{
 			if(input[i+1] != 'i')
 			{
-				for(int i = 0; (unsigned int)i < erPi.size(); i++)
-				{
-						error.push_back(erPi[i]);
-				}
-				return error;
+				throw invalid_argument("Enter pi as pi and not p!");
 			}
 			else if(input[i+2] == 'r'&&input[i+3] == 't') //Check to see if being used in nrt
 			{
-				for(int i = 0; (unsigned int)i < erNrt.size(); i++)
-				{
-						error.push_back(erNrt[i]);
-				}
-				return error;
+				throw invalid_argument("That is not valid n for nrt! Integers only!");
 			}
 			else
 				pi = true;
@@ -162,23 +140,15 @@ vector<char> shunt(string expression, bool debug)
 		//check for a lone i
 		if(input[i] == 'i')
 		{
-			for(int i = 0; (unsigned int)i < erI.size(); i++)
-			{
-					error.push_back(erI[i]);
-			}
-			return error;
+			throw invalid_argument("No complex numbers!");
 		}
 
-		//check for nrt
-		if(input[i+1] == 'r'&&input[i+2] == 't'&&input[i+3] == ':')
+		//check for nrt, if n is negative increase index checked by one
+		if(input[i+1+(int)neg] == 'r'&&input[i+2+(int)neg] == 't'&&input[i+3+(int)neg] == ':')
 		{
-			if(!isdigit(input[i]))
+			if(!isdigit(input[i+(int)neg]))
 			{
-				for(int i = 0; (unsigned int)i < erNrt.size(); i++)
-				{
-						error.push_back(erNrt[i]);
-				}
-				return error;
+				throw invalid_argument("That is not valid n for nrt! Integers only!");
 			}
 			else
 			nrt = true;
@@ -188,11 +158,17 @@ vector<char> shunt(string expression, bool debug)
 		//Put a space in the output stack
 		if ((input[i] == ' '||input[i] == ':')&& output.back()!= ' ')
 		{
+			//Check for double spaces
+			if(input[i-1] == ' '||input[i+1] == ' ')
+			{
+				throw invalid_argument("Don't enter two spaces in a row!");
+			}
+			else
 			output.push_back(' ');
 		}
 
 		//Put the digit in the output stack
-		else if ((isdigit(input[i])||input[i] == 'e'||input[i] == 'p')&&!nrt)
+		else if ((isdigit(input[i])||input[i] == 'e'||input[i] == 'p'||(input[i] == '-'&&neg))&& !nrt)
 		{
 			if(input[i] == 'p')
 			{
@@ -204,22 +180,24 @@ vector<char> shunt(string expression, bool debug)
 				}
 				else
 				{
-					for(int i = 0; (unsigned int)i < erPi.size(); i++)
-					{
-							error.push_back(erPi[i]);
-					}
-					return error;
+					throw invalid_argument("Enter pi as pi and not p!");
 				}
 			}
-			else
-				output.push_back(input[i]);
+			else{
+				output.push_back(input[i]);}
 
 
 		}
 
 		//If an operator
-		else if(input[i] == '+'||input[i] == '-'||input[i] == '*'||input[i] == '/'||input[i] == '^'||input[i] == 'l'||sqrt||log||nrt)
+		else if(input[i] == '+'||((input[i] == '-')&& !neg)||input[i] == '*'||input[i] == '/'||input[i] == '^'||input[i] == 'l'||sqrt||log||nrt)
 		{
+
+			//Check for spaces before and after an operator
+			if((input[i-1] != ' '||input[i+1] != ' ')&&!neg&&!nrt)
+			{
+				throw invalid_argument("You need a space infront and behind an operator!");
+			}
 			//No operators on the stack
 			if(stack.back() == ' ')
 			{
@@ -234,7 +212,12 @@ vector<char> shunt(string expression, bool debug)
 				}
 				else if(nrt)
 				{
-					stack.push_back(input[i]); //n
+					if(input[i] == '-')
+						stack.push_back('n');
+					else
+						stack.push_back(input[i]); //n
+					if(neg)
+						stack.push_back(input[i+1]);
 					stack.push_back('r');
 					stack.push_back('t');
 				}
@@ -255,7 +238,7 @@ vector<char> shunt(string expression, bool debug)
 				case 's': if(sqrt){precedenceIn = exp;} break;
 				case 'l': if(log){precedenceIn = logpre;} 	break;
 				default: precedenceIn = 0;		break;}
-				if(input[i+1] == 'r') //nrt cant be checked above
+				if(input[i+1+neg] == 'r') //nrt cant be checked above
 					precedenceIn = exp;
 
 				//Precedence comparing to
@@ -286,7 +269,12 @@ vector<char> shunt(string expression, bool debug)
 					}
 					else if(nrt)
 					{
-						stack.push_back(input[i]);
+						if(input[i] == '-')
+							stack.push_back('n');
+						else
+							stack.push_back(input[i]);
+						if(neg)
+							stack.push_back(input[i+1]);
 						stack.push_back('r');
 						stack.push_back('t');
 					}
@@ -302,13 +290,13 @@ vector<char> shunt(string expression, bool debug)
 						if(stack[stack.size()-2] == 'r')	//nrt
 						{
 							int k = 0;
-							while(k < 3)
+							while(k < 3 + neg)
 							{
-								output.push_back(stack[stack.size()-3+k]);
+								output.push_back(stack[stack.size()-(3+neg)+k]);
 								k++;
 							}
 							k = 0;
-							while(k < 3)	// Cant be done in the same while loop since we still need the information being popped
+							while(k < 3 + neg)	// Cant be done in the same while loop since we still need the information being popped
 							{
 								stack.pop_back();
 								k++;
@@ -400,7 +388,7 @@ vector<char> shunt(string expression, bool debug)
 			}
 		}
 		if(debug)
-		cout<<endl<<sqrt<<pi<<log<<nrt;
+		cout<<endl<<sqrt<<pi<<log<<nrt<<neg;
 		if(sqrt)
 			i = i+4; //move 4 spaces over since sqrt is taken care of
 		if(pi)
@@ -408,7 +396,12 @@ vector<char> shunt(string expression, bool debug)
 		if(log)
 			i = i+3;
 		if(nrt)
-			 i = i+3;
+		{
+			if(neg)
+				i = i+4;
+			else
+				i = i+3;
+		}
 
 	}
 
@@ -434,15 +427,21 @@ vector<char> shunt(string expression, bool debug)
 		}
 		else if(stack[stack.size()-2] == 'r')	//nrt
 		{
+			bool neg = false;
+			if(stack[stack.size()-4] == 'n')
+				neg = true;
 			output.push_back(' ');
 			int k = 0;
-			while(k < 3)
+			while(k < 3 + (int)neg)
 			{
-				output.push_back(stack[stack.size()-3+k]);
+				if(stack[stack.size()-(3+neg)+k] == 'n')
+					output.push_back('-');
+				else
+					output.push_back(stack[stack.size()-(3+neg)+k]);
 				k++;
 			}
 			k = 0;
-			while(k < 3)	// Cant be done in the same while loop since we still need the information being popped
+			while(k < 3 + (int)neg)	// Cant be done in the same while loop since we still need the information being popped
 			{
 				stack.pop_back();
 				k++;
@@ -461,11 +460,7 @@ vector<char> shunt(string expression, bool debug)
 	{
 		if(output[i] == '(' || output[i] == ')')
 		{
-			for(int i = 0; (unsigned int)i < erPer.size(); i++)
-			{
-					error.push_back(erPer[i]);
-			}
-			return error;
+			throw invalid_argument("Unbalanced parentheses!");
 		}
 	}
 
@@ -555,6 +550,7 @@ void mode(bool &debug)
 
 void printNumberStack(vector<Number*> stack)
 {
+	cout<<"Numbers in stack: ";
 	for(unsigned int i = 0; i < stack.size(); i++)
 	{
 		stack[i]->print();
@@ -562,14 +558,8 @@ void printNumberStack(vector<Number*> stack)
 	}
 }
 
-Number* evalShunt(vector<char> expression)
+Number* evalShunt(vector<char> expression, bool debug)
 {
-	if(expression[0] == 'E' && expression[1] == 'R' && expression[2] == 'R' && expression[3] == 'O' && expression[4] == 'R')
-	{
-		printVectorChar(expression);
-		Basic* error = new Basic(-1);   //probably should find something better to do for this
-		return error;
-	}
     vector<Number*> stack;
     int i = 0;
     while ((unsigned int)i < expression.size())
@@ -732,6 +722,8 @@ Number* evalShunt(vector<char> expression)
                     Number* a2 = new Basic(2);
                     Number* half = new Fraction(a1, a2);  //assuming Fraction(Number* num, Number* denom)
                     Number* num2 = num1->expo(half);
+                    delete num1;
+                    delete half;
                     stack.push_back(num2);
                     i += 2;
                 }
@@ -753,7 +745,7 @@ Number* evalShunt(vector<char> expression)
                     Number* num1 = stack.back();
                     stack.pop_back();
                     Number* num2 = num1->expo(frac);
-                    //delete num1;
+                    delete num1;
 
                     stack.push_back(num2);
                     i += 4;
@@ -765,8 +757,11 @@ Number* evalShunt(vector<char> expression)
             }
 
         }
-        //printNumberStack(stack);
-        //cout << endl;
+        if(debug)
+        {
+        printNumberStack(stack);
+        cout << endl;
+        }
     }
     return stack[0];
 }
@@ -777,21 +772,25 @@ Number* evalShunt(vector<char> expression)
 int main()
 {
 	//for testing
-	string in = "33 / 55";
+	string in = "sqt:1";
 	vector<char> test;
-	test = shunt(in, false);
-	cout<<endl<<endl<<"Input:  "<<in<<endl;
-	cout<<"Final:  ";
-	printVectorChar(test);
+
+	try{
+		test = shunt(in, true);
+		cout<<endl<<endl<<"Input:  "<<in<<endl;
+		cout<<"Final:  ";
+		printVectorChar(test);}
+	catch(exception& e){
+		cout<<endl<<"ERROR: "<<e.what();}
+
 	cout << endl;
-	Number* num = evalShunt(test);
-	num->print();
+	//Number* num = evalShunt(test);
+	//num->print();
 
 	/*Basic* a = new Basic(7);
 	Basic* b = new Basic(12);
-	Fraction* frac = new Fraction(a, b);
-	int c = frac->getGCD(44, 66);
-	cout << c;*/
+	Number* num = a->add(b);
+	num->print();*/
 
 
 	//Menu
@@ -805,6 +804,7 @@ int main()
 		string blah;
 		vector<char> test;
 		char selection;
+		Number* num;
 
 		cout<<endl<<"What do you want to do?";
 		cout<<endl<<"1. Input your expression"<<
@@ -822,9 +822,16 @@ int main()
 		case '1': cout<<"Input your expression: ";
 						getline(cin, in);
 						test = shunt(in, debug);
+						if(debug)
+						{
 						cout<<endl<<"Input:  "<<in<<endl;
 						cout<<"Final:  ";
-						printVectorChar(test);break;
+						printVectorChar(test);
+						cout << endl;
+						}
+						num = evalShunt(test, debug);
+						cout<<"Result: ";
+						num->print();break;
 
 		case '2': cout<<"Under construction!"<<endl; break;//memory()
 
