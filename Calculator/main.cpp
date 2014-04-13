@@ -33,7 +33,6 @@ vector<char> shunt(string expression, bool debug)
 
 	stack.push_back(' '); //initialize stack, otherwise program crash if the expression does not start with '('
 
-
 	//Precedence of operations
 	int precedenceIn = 0;
 	int precedenceSt = 0;
@@ -59,6 +58,7 @@ vector<char> shunt(string expression, bool debug)
 		bool log = false;
 		bool nrt = false;
 		bool neg = false;
+		bool ans = false;
 
 		if(debug)
 		cout<< endl<< j;
@@ -78,10 +78,13 @@ vector<char> shunt(string expression, bool debug)
 				&&input[i] != 's'&&input[i] != 'q'&&input[i] != 'r'&&input[i] != 't'&&input[i] != 'l'
 						&&input[i] != 'o'&&input[i] != 'g'&&input[i] != '_'&&input[i] != ':'&&input[i] != '^'
 								&&input[i] != 'r'&&input[i] != 't'&&input[i] != ' '&&input[i] != '('&&input[i] != ')'
-										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e')
+										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e'&&input[i] != 'a'&&input[i] != 'n')
 		{
 			throw invalid_argument("You entered an invalid character!");
 		}
+
+		//check if starting with a space
+		if(input[i] == ' ')
 
 		//check for negative number
 		if(input[i] == '-'&&(isdigit(input[i+1])||input[i+1] == 'p'||input[i+1] == 'e'))
@@ -89,6 +92,14 @@ vector<char> shunt(string expression, bool debug)
 			neg = true;
 		}
 
+		//check for ans
+		if(input[i] == 'a')
+		{
+			if(input[i+1] == 'n'&&input[i+2] == 's')
+				ans = true;
+			else
+				throw invalid_argument("You did not input ans correctly!");
+		}
 
 		//check for sqrt:n
 		if(input[i] == 's')
@@ -156,7 +167,7 @@ vector<char> shunt(string expression, bool debug)
 
 
 		//Put a space in the output stack
-		if ((input[i] == ' '||input[i] == ':')&& output.back()!= ' ')
+		if ((input[i] == ' '||input[i] == ':')&&output.back()!= ' ')
 		{
 			//Check for double spaces
 			if(input[i-1] == ' '||input[i+1] == ' ')
@@ -168,7 +179,7 @@ vector<char> shunt(string expression, bool debug)
 		}
 
 		//Put the digit in the output stack
-		else if ((isdigit(input[i])||input[i] == 'e'||input[i] == 'p'||(input[i] == '-'&&neg))&& !nrt)
+		else if ((isdigit(input[i])||input[i] == 'e'||input[i] == 'p'||(input[i] == '-'&&neg)||input[i] == 'a')&& !nrt)
 		{
 			if(input[i] == 'p')
 			{
@@ -185,8 +196,6 @@ vector<char> shunt(string expression, bool debug)
 			}
 			else{
 				output.push_back(input[i]);}
-
-
 		}
 
 		//If an operator
@@ -395,6 +404,8 @@ vector<char> shunt(string expression, bool debug)
 			i++;
 		if(log)
 			i = i+3;
+		if(ans)
+			i = i+2;
 		if(nrt)
 		{
 			if(neg)
@@ -466,86 +477,6 @@ vector<char> shunt(string expression, bool debug)
 
 
 	return output;
-}
-
-void help()
-{
-	char selection;
-	while(true)
-	{
-	cout<<endl<<"What do you need help with?";
-	cout<<endl<<"1. Operators"
-		<<endl<<"2. Square root"
-		<<endl<<"3. N root"
-		<<endl<<"4. Logarithms"
-		<<endl<<"5. Examples"
-		<<endl<<"0. Quit";
-
-	cout<<endl<<endl<<"Input your selection: ";
-	cout<<endl;
-
-	cin>>selection;
-	cin.ignore();
-
-	switch(selection)
-	{
-	case '1': cout<<"When using operators, such as + - * / ^ make sure to put a space between the operator"
-			" and the numbers being operated on, parentheses do not need spaces."
-			<<endl<<"Example: 1 + 2 or (4 / 2)"<<endl;	break;
-
-	case '2': cout<<"To take the square root of a number input sqrt:n where n is the number you"
-			" want to take the square root of."<<endl<<"Example: sqrt:4"<<endl;	break;
-
-	case '3': cout<<"To take the N root of a number input nrt:a where n is the root and a is the number"
-			" you are taking the root of."<<endl<<"Example: 2rt:4 or 3rt:9"<<endl;	break;
-
-	case '4': cout<<"To find the logarithm of a number input log_b:n where b is the base and n is the number"
-			" you are taking the logarithm of."<<endl<<"Example: log_2:4"<<endl;	break;
-
-	case '5': cout<<"Here are some example inputs for this calculator:"<<endl<<"(1 + 2) / 3"<<endl<<"sqrt:4 + log_2:4"
-			<<endl<<"2 ^ (10 / 2) * 4rt:16"<<endl;	break;
-
-	case '0': cout<<"Have fun!"<<endl; return;
-
-	default : cout<<"That is not a valid selection!"<<endl; break;
-	}
-	}
-
-}
-
-void mode(bool &debug)
-{
-	char selection;
-	while(true)
-	{
-		cout<<"Available modes:"
-			<<endl<<"1. Debug"
-			<<endl<<"0. Quit"<<endl;
-		cout<<endl<<"Input your selection: ";
-		cin>>selection;
-		cin.ignore();
-
-		switch(selection)
-		{
-		case '1': if(debug == true)
-				  {
-					  debug = false;
-					  cout<<endl<<"Debug mode has been turned off."<<endl;;
-				  }
-				  else
-				  {
-					  debug = true;
-					  cout<<endl<<"Debug mode has been turned on."<<endl;;
-				  }
-					break;
-
-		case '0': cout<<endl<<"Have fun!"<<endl;
-				cout<<debug; return;
-
-		default : cout<<endl<<"That is not a valid selection!"<<endl; break;
-		}
-
-	}
 }
 
 void printNumberStack(vector<Number*> stack)
@@ -766,13 +697,98 @@ Number* evalShunt(vector<char> expression, bool debug)
     return stack[0];
 }
 
+/*void memory(vector<Number> memory, int &ans)
+{
 
+}*/
 
+void help()
+{
+	char selection;
+	while(true)
+	{
+	cout<<endl<<"What do you need help with?";
+	cout<<endl<<"1. Operators"
+		<<endl<<"2. Square root"
+		<<endl<<"3. N root"
+		<<endl<<"4. Logarithms"
+		<<endl<<"5. Examples"
+		<<endl<<"0. Quit";
+
+	cout<<endl<<endl<<"Input your selection: ";
+	cout<<endl;
+
+	cin>>selection;
+	cin.ignore();
+
+	switch(selection)
+	{
+	case '1': cout<<"When using operators, such as + - * / ^ make sure to put a space between the operator"
+			" and the numbers being operated on, parentheses do not need spaces."
+			<<endl<<"Example: 1 + 2 or (4 / 2)"<<endl;	break;
+
+	case '2': cout<<"To take the square root of a number input sqrt:n where n is the number you"
+			" want to take the square root of."<<endl<<"Example: sqrt:4"<<endl;	break;
+
+	case '3': cout<<"To take the N root of a number input nrt:a where n is the root and a is the number"
+			" you are taking the root of."<<endl<<"Example: 2rt:4 or 3rt:9"<<endl;	break;
+
+	case '4': cout<<"To find the logarithm of a number input log_b:n where b is the base and n is the number"
+			" you are taking the logarithm of."<<endl<<"Example: log_2:4"<<endl;	break;
+
+	case '5': cout<<"Here are some example inputs for this calculator:"<<endl<<"(1 + 2) / 3"<<endl<<"sqrt:4 + log_2:4"
+			<<endl<<"2 ^ (10 / 2) * 4rt:16"<<endl;	break;
+
+	case '0': cout<<"Have fun!"<<endl; return;
+
+	default : cout<<"That is not a valid selection!"<<endl; break;
+	}
+	}
+
+}
+
+void mode(bool &debug)
+{
+	char selection;
+	while(true)
+	{
+		cout<<"Available modes:"
+			<<endl<<"1. Debug"
+			<<endl<<"0. Quit"<<endl;
+		cout<<endl<<"Input your selection: ";
+		cin>>selection;
+		cin.ignore();
+
+		switch(selection)
+		{
+		case '1': if(debug == true)
+				  {
+					  debug = false;
+					  cout<<endl<<"Debug mode has been turned off."<<endl;;
+				  }
+				  else
+				  {
+					  debug = true;
+					  cout<<endl<<"Debug mode has been turned on."<<endl;;
+				  }
+					break;
+
+		case '0': cout<<endl<<"Have fun!"<<endl;
+				cout<<debug; return;
+
+		default : cout<<endl<<"That is not a valid selection!"<<endl; break;
+		}
+
+	}
+}
 
 int main()
 {
+	//vector<Number> memory;
+
+
 	//for testing
-	string in = "sqt:1";
+	string in = "1 +1";
 	vector<char> test;
 
 	try{
@@ -794,7 +810,7 @@ int main()
 
 
 	//Menu
-	/*bool debug  = false;
+	bool debug  = false;
 
 
 	cout<<"If this is your first time using this calculator please check out \"Help\""<<endl;
@@ -821,14 +837,13 @@ int main()
 		{
 		case '1': cout<<"Input your expression: ";
 						getline(cin, in);
-						test = shunt(in, debug);
-						if(debug)
-						{
-						cout<<endl<<"Input:  "<<in<<endl;
-						cout<<"Final:  ";
-						printVectorChar(test);
-						cout << endl;
-						}
+						try{
+								test = shunt(in, true);
+								cout<<endl<<endl<<"Input:  "<<in<<endl;
+								cout<<"Final:  ";
+								printVectorChar(test);}
+						catch(exception& e){
+								cout<<endl<<"ERROR: "<<e.what();}
 						num = evalShunt(test, debug);
 						cout<<"Result: ";
 						num->print();break;
@@ -844,7 +859,7 @@ int main()
 		default: cout<<"You did not input a valid selection!"<<endl; break;
 		}
 
-	}*/
+	}
 
 	return 0;
 
