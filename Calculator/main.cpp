@@ -564,6 +564,12 @@ void printNumberStack(vector<Number*> stack)
 
 Number* evalShunt(vector<char> expression)
 {
+	if(expression[0] == 'E' && expression[1] == 'R' && expression[2] == 'R' && expression[3] == 'O' && expression[4] == 'R')
+	{
+		printVectorChar(expression);
+		Basic* error = new Basic(-1);   //probably should find something better to do for this
+		return error;
+	}
     vector<Number*> stack;
     int i = 0;
     while ((unsigned int)i < expression.size())
