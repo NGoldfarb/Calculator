@@ -497,6 +497,216 @@ void mode(bool &debug)
 	}
 }
 
+Number* evalShunt(vector<char> expression)
+{
+    vector<Number*> stack;
+    int i = 0;  //maybe do if(expression[i] == ' ') i++ to account for spaces
+    while ((unsigned int)i < expression.size())  //could possibly do for loop with extra ++'s instead
+    {  //need to initialize basics or irrationals to numbers
+        if ('0' <= expression[i] && expression[i] <= '9' && expression[i + 1] != 'r')  //if next token is digit and not root
+        {
+            int num = 0;
+            int counter = 1;
+            while (expression[i] != ' ')
+            {
+                num += (expression[i] - '0')*counter;
+                counter *= 10;
+            }
+            Number* basic = new Basic(num);
+            stack.push_back(basic);
+            i++;
+        }
+        else if (expression[i] == 'e')  //if next token is e
+        {
+            Number* y = new Basic(1);
+            Number* e = new Irrational('e',y,y);   //update when irrational constructor known
+            stack.push_back(e);
+            i += 2;
+        }
+        else if (expression[i] == 'p')  //if next token is pi
+        {
+            Number* y = new Basic(1);
+            Number* pi = new Irrational('p', y, y);  //assuming irrational(isPi)
+            stack.push_back(pi);
+            i += 3;
+        }
+        else if (expression[i] == ' ') //next token is space, increment i
+        {
+            i++;
+        }
+        else  //next token is operator or error
+        {
+            if (expression[i] == '+')  //perform addition on top two Numbers on stack
+            {
+                if (stack.size() < 2)  //make sure there is enough on the stack
+                {
+                    throw exception("The addition does not have 2 operands.");
+                }
+                else
+                {
+                    Number* num1 = stack.back();
+                    stack.pop_back();
+                    Number* num2 = stack.back();
+                    stack.pop_back();
+                    Number* num3 = num1->add(num2);
+                    delete num1;  //not sure if
+                    delete num2;  //I need these
+                    stack.push_back(num3);
+                    i += 2;
+                }
+            }
+            else if (expression[i] == '-')  //perform subtraction on top two Numbers on stack
+            {
+                if (stack.size() < 2)  //make sure there is enough on the stack
+                {
+                    throw exception("The subtraction does not have 2 operands.");
+                }
+                else
+                {
+                    Number* num1 = stack.back();
+                    stack.pop_back();
+                    Number* num2 = stack.back();
+                    stack.pop_back();
+                    Number* num3 = num1->subtract(num2);
+                    delete num1;  //not sure if
+                    delete num2;  //I need these
+                    stack.push_back(num3);
+                    i += 2;
+                }
+            }
+            else if (expression[i] == '*')  //perform multiplication on top two Numbers on stack
+            {
+                if (stack.size() < 2)  //make sure there is enough on the stack
+                {
+                    throw exception("The multiplication does not have 2 operands.");
+                }
+                else
+                {
+                    Number* num1 = stack.back();
+                    stack.pop_back();
+                    Number* num2 = stack.back();
+                    stack.pop_back();
+                    Number* num3 = num1->multiply(num2);
+                    delete num1;  //not sure if
+                    delete num2;  //I need these
+                    stack.push_back(num3);
+                    i += 2;
+                }
+            }
+            else if (expression[i] == '/')  //perform division on top two Numbers on stack
+            {
+                if (stack.size() < 2)  //make sure there is enough on the stack
+                {
+                    throw exception("The division does not have 2 operands.");
+                }
+                else
+                {
+                    Number* num1 = stack.back();
+                    stack.pop_back();
+                    Number* num2 = stack.back();
+                    stack.pop_back();
+                    Number* num3 = num1->divide(num2);
+                    delete num1;  //not sure if
+                    delete num2;  //I need these
+                    stack.push_back(num3);
+                    i += 2;
+                }
+            }
+            else if (expression[i] == '^')  //perform exponentiation on top two Numbers on stack
+            {
+                if (stack.size() < 2)  //make sure there is enough on the stack
+                {
+                    throw exception("The exponent does not have 2 operands.");
+                }
+                else
+                {
+                    Number* num1 = stack.back();
+                    stack.pop_back();
+                    Number* num2 = stack.back();
+                    stack.pop_back();
+                    Number* num3 = num1->expo(num2);
+                    delete num1;  //not sure if
+                    delete num2;  //I need these
+                    stack.push_back(num3);
+                    i += 2;
+                }
+            }
+            // need log_x:y to be in form x y log or x y l
+            else if (expression[i] == 'l')  //performs logarithm on top two Numbers of stack
+            {
+                if (stack.size() < 2)  //make sure there is enough on the stack
+                {
+                    throw exception("The logarithm does not have 2 operands.");
+                }
+                else
+                {
+                    Number* num1 = stack.back();
+                    stack.pop_back();
+                    Number* num2 = stack.back();
+                    stack.pop_back();
+                    Number* num3 = num2->expo(num1);  //assuming for base.log(argument) CHANGE EXP TO LOG
+                    delete num1;  //not sure if
+                    delete num2;  //I need these
+                    stack.push_back(num3);
+                    i += 3;  //based on log_x:y being x y lb
+                }
+            }
+            else if (expression[i] == 's')
+            {
+                if (stack.size() < 1)
+                {
+                    throw exception("There is nothing to take the square root of.");
+                }
+                else
+                {
+                    Number* num1 = stack.back();
+                    stack.pop_back();
+                    Number* a1 = new Basic(1);
+                    Number* a2 = new Basic(2);
+                    Number* half = new Fraction(a1, a2);  //assuming Fraction(int num, int denom)
+                    Number* num2 = num1->expo(half);
+                    delete num1;
+                    delete half;
+                    stack.push_back(num2);
+                    i += 2;
+                }
+            }
+            else if ('0' <= expression[i]&&expression[i] <= '9') //must be nth root, can only take single digits
+            {
+                if (stack.size() < 1)
+                {
+                    throw exception("There is nothing to take nth root of.");
+                }
+                else
+                {
+                    int root = expression[i] - '0';
+                    Number* a1 = new Basic(root);
+                    Number* a2 = new Basic(1);
+                    Number* frac = new Fraction(a2, a1);
+
+
+                    Number* num1 = stack.back();
+                    stack.pop_back();
+                    Number* num2 = num1->expo(frac);
+                    delete num1;
+
+                    stack.push_back(num2);
+                    i += 4;
+                }
+            }
+            else  //maybe Nikita took care of this
+            {
+                throw exception("Something's messed up.");
+            }
+
+        }
+    }
+    return stack[0];
+}
+
+
+
+
 int main()
 {
 	string in = "1 + 2 + pi + e";

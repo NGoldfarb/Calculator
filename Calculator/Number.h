@@ -1,36 +1,40 @@
-/*
- * Number.h
- *
- *  Created on: Apr 6, 2014
- *      Author: Nikita
- */
 
-#ifndef NUMBER_H_
-#define NUMBER_H_
+ #ifndef NUMBER_H
+#define NUMBER_H
 
 #include <string>
+#include <iostream>
+#include <vector>
+
+
 using namespace std;
 
-class Number
-{
+class Number{
+    public:
+        string type;
+        virtual Number* add(Number*) = 0;
+        virtual Number* subtract(Number*) = 0;
+        virtual Number* multiply(Number*) = 0;
+        virtual Number* divide(Number*) = 0;
+        virtual int getValue() = 0;
+        virtual char getCharValue() = 0;
+        virtual Number* simplifyHelper() = 0;
+        virtual Number* expo(Number*) = 0;
+        virtual string getType() = 0;
+        virtual void print() = 0;
+        virtual Number* getNum()=0;
+        virtual Number* getDen()=0;
+        virtual void setNum(Number*) = 0;
+        virtual void setDen(Number*) = 0;
+        virtual Number* simplify(Number*,int) = 0;
+        //for irrational class
+        virtual Number* getCoef() = 0;
+        virtual Number* getExp() = 0;
+        //for exponent class
+        virtual Number* getBase() = 0;
 
-public:
-
-	string type;
-
-	//When I try to set it to return Number it says that it must implement the function?
-	virtual Number add()=0;	//example
-	virtual void subtract()=0;
-	virtual void multiply()=0;
-	virtual void divide()=0;
-	virtual void exponentiate()=0;
-	virtual void log()=0;
-
-	virtual Number();
-	virtual ~Number();
+        virtual ~Number();   //had to add a virtual destructor
 
 };
 
-
-
-#endif /* NUMBER_H_ */
+#endif /* NUMBER_H */
