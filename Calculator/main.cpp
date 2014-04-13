@@ -84,7 +84,10 @@ vector<char> shunt(string expression, bool debug)
 		}
 
 		//check if starting with a space
-		if(input[i] == ' ')
+		if(input[i] == ' '&&output.size() == 0)
+		{
+			throw invalid_argument("Don't start the expression with a space!");
+		}
 
 		//check for negative number
 		if(input[i] == '-'&&(isdigit(input[i+1])||input[i+1] == 'p'||input[i+1] == 'e'))
@@ -203,7 +206,7 @@ vector<char> shunt(string expression, bool debug)
 		{
 
 			//Check for spaces before and after an operator
-			if((input[i-1] != ' '||input[i+1] != ' ')&&!neg&&!nrt)
+			if((input[i-1] != ' '||input[i+1] != ' ')&&!neg&&!nrt&&!sqrt)
 			{
 				throw invalid_argument("You need a space infront and behind an operator!");
 			}
@@ -788,7 +791,7 @@ int main()
 
 
 	//for testing
-	string in = "1 +1";
+	/*string in = "1 +1";
 	vector<char> test;
 
 	try{
@@ -817,7 +820,7 @@ int main()
 	while(true)
 	{
 		string in;
-		string blah;
+
 		vector<char> test;
 		char selection;
 		Number* num;
@@ -841,12 +844,14 @@ int main()
 								test = shunt(in, true);
 								cout<<endl<<endl<<"Input:  "<<in<<endl;
 								cout<<"Final:  ";
-								printVectorChar(test);}
+								printVectorChar(test);
+								cout<<endl;
+								num = evalShunt(test, debug);
+								cout<<"Result: ";
+								num->print();}
 						catch(exception& e){
 								cout<<endl<<"ERROR: "<<e.what();}
-						num = evalShunt(test, debug);
-						cout<<"Result: ";
-						num->print();break;
+						break;
 
 		case '2': cout<<"Under construction!"<<endl; break;//memory()
 
