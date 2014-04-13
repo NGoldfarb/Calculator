@@ -10,6 +10,7 @@
 #include "Number.h"
 #include "Basic.h"
 #include "Fraction.h"
+#include "Irrational.h"
 #include <stdexcept>
 using namespace std;
 
@@ -522,17 +523,17 @@ Number* evalShunt(vector<char> expression, bool debug)
         }
         else if (expression[i] == 'e')  //if next token is e
         {
-            /*Number* y = new Basic(1);
+            Number* y = new Basic(1);
             Number* e = new Irrational('e',y,y);   //update when irrational constructor known
             stack.push_back(e);
-            i += 2;*/
+            i += 2;
         }
         else if (expression[i] == 'p')  //if next token is pi
         {
-            /* y = new Basic(1);
+            Number* y = new Basic(1);
             Number* pi = new Irrational('p', y, y);  //assuming irrational(isPi)
             stack.push_back(pi);
-            i += 3;*/
+            i += 3;
         }
         else if (expression[i] == ' ') //next token is space, increment i
         {
@@ -811,9 +812,14 @@ int main()
 	Number* num = a->add(b);
 	num->print();*/
 
+	Number* b = new Basic(1);
+	Number* q = new Basic(2);
+	Number* n1 = new Irrational('e',q,b);
+	n1->print();
+
 
 	//Menu
-	bool debug  = false;
+	/*bool debug  = false;
 
 
 	cout<<"If this is your first time using this calculator please check out \"Help\""<<endl;
@@ -841,10 +847,13 @@ int main()
 		case '1': cout<<"Input your expression: ";
 						getline(cin, in);
 						try{
-								test = shunt(in, true);
+								test = shunt(in, debug);
+								if(debug)
+								{
 								cout<<endl<<endl<<"Input:  "<<in<<endl;
 								cout<<"Final:  ";
 								printVectorChar(test);
+								}
 								cout<<endl;
 								num = evalShunt(test, debug);
 								cout<<"Result: ";
@@ -864,7 +873,7 @@ int main()
 		default: cout<<"You did not input a valid selection!"<<endl; break;
 		}
 
-	}
+	}*/
 
 	return 0;
 
