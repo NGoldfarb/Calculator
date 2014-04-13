@@ -17,8 +17,10 @@ class Number{
         virtual Number* multiply(Number*) = 0;
         virtual Number* divide(Number*) = 0;
         virtual int getValue() = 0;
+        virtual void setValue(int)=0;
         virtual char getCharValue() = 0;
-        virtual Number* simplifyHelper() = 0;
+        //virtual Number* simplifyHelper() = 0;
+        virtual void simplify()=0;
         virtual Number* expo(Number*) = 0;
         virtual string getType() = 0;
         virtual void print() = 0;
@@ -26,7 +28,7 @@ class Number{
         virtual Number* getDen()=0;
         virtual void setNum(Number*) = 0;
         virtual void setDen(Number*) = 0;
-        virtual Number* simplify(Number*,int) = 0;
+        //virtual Number* simplify(Number*,int) = 0;
         //for irrational class
         virtual Number* getCoef() = 0;
         virtual Number* getExp() = 0;

@@ -726,8 +726,6 @@ Number* evalShunt(vector<char> expression)
                     Number* a2 = new Basic(2);
                     Number* half = new Fraction(a1, a2);  //assuming Fraction(Number* num, Number* denom)
                     Number* num2 = num1->expo(half);
-                    delete num1;
-                    delete half;
                     stack.push_back(num2);
                     i += 2;
                 }
@@ -749,7 +747,7 @@ Number* evalShunt(vector<char> expression)
                     Number* num1 = stack.back();
                     stack.pop_back();
                     Number* num2 = num1->expo(frac);
-                    delete num1;
+                    //delete num1;
 
                     stack.push_back(num2);
                     i += 4;
@@ -761,8 +759,8 @@ Number* evalShunt(vector<char> expression)
             }
 
         }
-        printNumberStack(stack);
-        cout << endl;
+        //printNumberStack(stack);
+        //cout << endl;
     }
     return stack[0];
 }
@@ -773,9 +771,9 @@ Number* evalShunt(vector<char> expression)
 int main()
 {
 	//for testing
-	string in = "1 + ert:2";
+	string in = "33 / 55";
 	vector<char> test;
-	test = shunt(in, true);
+	test = shunt(in, false);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
 	cout<<"Final:  ";
 	printVectorChar(test);
@@ -785,8 +783,9 @@ int main()
 
 	/*Basic* a = new Basic(7);
 	Basic* b = new Basic(12);
-	Number* num = a->add(b);
-	num->print();*/
+	Fraction* frac = new Fraction(a, b);
+	int c = frac->getGCD(44, 66);
+	cout << c;*/
 
 
 	//Menu

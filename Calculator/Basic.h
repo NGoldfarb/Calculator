@@ -21,8 +21,10 @@ class Basic : public Number{
         Number* multiply(Number*);
         Number* divide(Number*);
         int getValue();
-        Number* simplifyHelper();
-        Number* simplify(Number*,int);
+        void setValue(int);
+        //Number* simplifyHelper();
+        //Number* simplify(Number*,int);
+        void simplify();
         Number* expo(Number*);
 
         void print();

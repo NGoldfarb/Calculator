@@ -61,14 +61,16 @@ Number* Fraction::multiply(Number* a){
         Basic* x1 = new Basic(numerator->getValue()*a->getNum()->getValue());
         Basic* x2 = new Basic(denominator->getValue()*a->getDen()->getValue());
         Number* n = new Fraction(x1, x2);
-        return n->simplifyHelper();
+        n->simplify();
+        return n;
     }
 
     if (a->getType() == "basic"){
         Basic* b = new Basic(a->getValue()*numerator->getValue());
         Number* x = b;
         Number* f = new Fraction(x, denominator);
-        return f->simplifyHelper();
+        f->simplify();
+        return f;
     }
 
     if (a->getType() == "irrational"){
@@ -92,17 +94,35 @@ Number* Fraction::expo(Number* a){
     return this;
 }
 
-Number* Fraction::simplifyHelper(){    // do we want this to be void?
+/*Number* Fraction::simplifyHelper(){    // do we want this to be void? - Zach
     return simplify(this, 9);
+}*/
+
+void Fraction::simplify()
+{
+	int gcd = this->getGCD(numerator->getValue(), denominator->getValue());
+	numerator->setValue(numerator->getValue()/gcd);
+	denominator->setValue(denominator->getValue()/gcd);
+}
+int Fraction::getGCD(int min, int max)   //making this static would be better but we can figure that out later
+{
+	if(max%min == 0)
+	{
+		return min;
+	}
+	else
+	{
+		return getGCD((max%min), min);
+	}
 }
 
-Number* Fraction::simplify(Number* a,int n){    // do we want this to be void?
+/*Number* Fraction::simplify(Number* a,int n){    // do we want this to be void? - Zach
         if (n == 1){
             return a;
         }
         if (denominator->getValue() == 1){
             Number* b = new Basic(numerator->getValue());
-            delete this;  //I think we need this
+            delete this;  //I think we need this - Zach
             return b;
         }
 
@@ -117,7 +137,7 @@ Number* Fraction::simplify(Number* a,int n){    // do we want this to be void?
             return a->simplify(a, n - 1);
         }
     }
-
+*/
 
 
 string Fraction::getType(){
@@ -139,6 +159,9 @@ void Fraction::print(){
 
 int Fraction::getValue(){
     return 1;
+}
+void Fraction::setValue(int a)
+{
 }
 
 void Fraction::setNum(Number* a){

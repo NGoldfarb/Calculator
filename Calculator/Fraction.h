@@ -27,6 +27,7 @@ class Fraction :public Number{
         Number* multiply(Number*);
         Number* divide(Number*);
         int getValue();
+        void setValue(int);
         Number* simplify(Number*, int);
         Number* simplifyHelper();
         Number* expo(Number*);
@@ -41,6 +42,9 @@ class Fraction :public Number{
 
         //for exponent class
         Number* getBase();
+
+        int getGCD(int, int);
+        void simplify();
 
 };
 
