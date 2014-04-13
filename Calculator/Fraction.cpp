@@ -1,24 +1,27 @@
 #include "Fraction.h"
 #include "Basic.h"
 #include <stdexcept>
+#include <math.h>   //for sqrt
 //#include "Irrational.h"
 using namespace std;
 
 Fraction::Fraction(Number* a, Number* b){
     if (b->getValue() == 0){
 
-        //throw exception("Nice try, dividing by zero");
+        throw invalid_argument("Nice try, dividing by zero");
     }
 
     else{
 
         numerator = a;
         denominator = b;
-        type = "fraction";
+        type = "Fraction";
     }
 }
 Fraction::~Fraction()
 {
+	delete numerator;
+	delete denominator;
 }
 
 Number* Fraction::getNum(){
@@ -69,11 +72,11 @@ Number* Fraction::multiply(Number* a){
     }
 
     if (a->getType() == "irrational"){
-        Basic* j = new Basic(numerator->getValue()*a->getCoef()->getValue());
+        /*Basic* j = new Basic(numerator->getValue()*a->getCoef()->getValue());
         Number* n = j;
         Number* i = new Irrational(a->getCharValue(), n, a->getExp());
         Number* k = new Fraction(i, denominator);
-        return k;
+        return k;*/
 
 
     }
@@ -89,18 +92,17 @@ Number* Fraction::expo(Number* a){
     return this;
 }
 
-Number* Fraction::simplifyHelper(){
+Number* Fraction::simplifyHelper(){    // do we want this to be void?
     return simplify(this, 9);
 }
 
-Number* Fraction::simplify(Number* a,int n){
-
+Number* Fraction::simplify(Number* a,int n){    // do we want this to be void?
         if (n == 1){
             return a;
-
         }
         if (denominator->getValue() == 1){
             Number* b = new Basic(numerator->getValue());
+            delete this;  //I think we need this
             return b;
         }
 
@@ -125,9 +127,9 @@ string Fraction::getType(){
 void Fraction::print(){
     if(denominator->getValue()!=1){
         cout << '(';
-         numerator->print();
+        numerator->print();
         cout << '/';
-         denominator->print();
+        denominator->print();
         cout << ')';
     }
     else{

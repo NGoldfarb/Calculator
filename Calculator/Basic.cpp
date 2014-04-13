@@ -2,7 +2,7 @@
 
 Basic::Basic(int n){
     value = n;
-    type = "basic";
+    type = "Basic";
 }
 Basic::~Basic()
 {
@@ -11,7 +11,9 @@ Basic::~Basic()
 
 Number* Basic::add(Number* n){
     Basic* x = new Basic(value + n->getValue());
-        return x;
+    delete n;
+    delete this;
+    return x;
 }
 
 Number* Basic::subtract(Number* n){
@@ -19,12 +21,22 @@ Number* Basic::subtract(Number* n){
     return x;
 }
 
-Number* Basic::multiply(Number* n){
-    Basic* x = new Basic(value*n->getValue());
-    return x;
+Number* Basic::multiply(Number* n){  //updated for when n is a fraction
+    if(n->getType() == "Basic")
+    {
+    	Basic* x = new Basic(value*n->getValue());
+    	return x;
+    }
+    else  //only works for fraction, used else because we need a return statement to compile
+    {
+    	Basic* x = new Basic(value*n->getNum()->getValue());
+    	Basic* y = new Basic(n->getDen()->getValue());  //created another Basic that won't get destructed when n does;
+    	Fraction* z = new Fraction(x, y);
+    	return z;
+    }
 }
 
-Number* Basic::divide(Number* n){
+Number* Basic::divide(Number* n){   //only works for Basics
     if (value%n->getValue() == 0){
         Basic* x = new Basic(value / n->getValue());
             return x;
@@ -56,11 +68,11 @@ int Basic::getValue(){
     return value;
 }
 
-void Basic::print(){
+void Basic::print(){  //changed so that prints out 1 values as well for fraction numerators etc
 
-    if (value != 1){
+    //if (value != 1){
         cout << value;
-    }
+    //}
 
 }
 

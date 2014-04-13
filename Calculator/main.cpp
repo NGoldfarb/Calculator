@@ -501,6 +501,15 @@ void mode(bool &debug)
 	}
 }
 
+void printNumberStack(vector<Number*> stack)
+{
+	for(unsigned int i = 0; i < stack.size(); i++)
+	{
+		stack[i]->print();
+		cout << " ";
+	}
+}
+
 Number* evalShunt(vector<char> expression)
 {
     vector<Number*> stack;
@@ -510,11 +519,20 @@ Number* evalShunt(vector<char> expression)
         if ('0' <= expression[i] && expression[i] <= '9' && expression[i + 1] != 'r')  //if next token is digit and not root
         {
             int num = 0;
-            int counter = 1;
-            while (expression[i] != ' ')
+            int multiplier = 1;  //multiplier for powers of 10
+            int counter = 1;   //counts digits
+            while (expression[i+1] != ' ')  //determines how many digits the number is
             {
-                num += (expression[i] - '0')*counter;
-                counter *= 10;
+                multiplier *= 10;
+                counter++;
+                i++;
+            }
+            i -= (counter - 1);
+            while(expression[i] != ' ')   //forms multidigit number
+            {
+            	num += (expression[i] - '0') * multiplier;
+            	multiplier /= 10;
+            	i++;
             }
             Number* basic = new Basic(num);
             stack.push_back(basic);
@@ -522,17 +540,17 @@ Number* evalShunt(vector<char> expression)
         }
         else if (expression[i] == 'e')  //if next token is e
         {
-            Number* y = new Basic(1);
+            /*Number* y = new Basic(1);
             Number* e = new Irrational('e',y,y);   //update when irrational constructor known
             stack.push_back(e);
-            i += 2;
+            i += 2;*/
         }
         else if (expression[i] == 'p')  //if next token is pi
         {
-            Number* y = new Basic(1);
+            /* y = new Basic(1);
             Number* pi = new Irrational('p', y, y);  //assuming irrational(isPi)
             stack.push_back(pi);
-            i += 3;
+            i += 3;*/
         }
         else if (expression[i] == ' ') //next token is space, increment i
         {
@@ -544,7 +562,7 @@ Number* evalShunt(vector<char> expression)
             {
                 if (stack.size() < 2)  //make sure there is enough on the stack
                 {
-                    throw exception("The addition does not have 2 operands.");
+                    throw invalid_argument("The addition does not have 2 operands.");
                 }
                 else
                 {
@@ -553,8 +571,6 @@ Number* evalShunt(vector<char> expression)
                     Number* num2 = stack.back();
                     stack.pop_back();
                     Number* num3 = num1->add(num2);
-                    delete num1;  //not sure if
-                    delete num2;  //I need these
                     stack.push_back(num3);
                     i += 2;
                 }
@@ -563,7 +579,7 @@ Number* evalShunt(vector<char> expression)
             {
                 if (stack.size() < 2)  //make sure there is enough on the stack
                 {
-                    throw exception("The subtraction does not have 2 operands.");
+                    throw invalid_argument("The subtraction does not have 2 operands.");
                 }
                 else
                 {
@@ -571,9 +587,7 @@ Number* evalShunt(vector<char> expression)
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
-                    Number* num3 = num1->subtract(num2);
-                    delete num1;  //not sure if
-                    delete num2;  //I need these
+                    Number* num3 = num2->subtract(num1);
                     stack.push_back(num3);
                     i += 2;
                 }
@@ -582,7 +596,7 @@ Number* evalShunt(vector<char> expression)
             {
                 if (stack.size() < 2)  //make sure there is enough on the stack
                 {
-                    throw exception("The multiplication does not have 2 operands.");
+                    throw invalid_argument("The multiplication does not have 2 operands.");
                 }
                 else
                 {
@@ -591,8 +605,6 @@ Number* evalShunt(vector<char> expression)
                     Number* num2 = stack.back();
                     stack.pop_back();
                     Number* num3 = num1->multiply(num2);
-                    delete num1;  //not sure if
-                    delete num2;  //I need these
                     stack.push_back(num3);
                     i += 2;
                 }
@@ -601,7 +613,7 @@ Number* evalShunt(vector<char> expression)
             {
                 if (stack.size() < 2)  //make sure there is enough on the stack
                 {
-                    throw exception("The division does not have 2 operands.");
+                    throw invalid_argument("The division does not have 2 operands.");
                 }
                 else
                 {
@@ -609,9 +621,7 @@ Number* evalShunt(vector<char> expression)
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
-                    Number* num3 = num1->divide(num2);
-                    delete num1;  //not sure if
-                    delete num2;  //I need these
+                    Number* num3 = num2->divide(num1);
                     stack.push_back(num3);
                     i += 2;
                 }
@@ -620,7 +630,7 @@ Number* evalShunt(vector<char> expression)
             {
                 if (stack.size() < 2)  //make sure there is enough on the stack
                 {
-                    throw exception("The exponent does not have 2 operands.");
+                    throw invalid_argument("The exponent does not have 2 operands.");
                 }
                 else
                 {
@@ -629,8 +639,6 @@ Number* evalShunt(vector<char> expression)
                     Number* num2 = stack.back();
                     stack.pop_back();
                     Number* num3 = num1->expo(num2);
-                    delete num1;  //not sure if
-                    delete num2;  //I need these
                     stack.push_back(num3);
                     i += 2;
                 }
@@ -639,7 +647,7 @@ Number* evalShunt(vector<char> expression)
             {
                 if (stack.size() < 2)  //make sure there is enough on the stack
                 {
-                    throw exception("The logarithm does not have 2 operands.");
+                    throw invalid_argument("The logarithm does not have 2 operands.");
                 }
                 else
                 {
@@ -648,8 +656,6 @@ Number* evalShunt(vector<char> expression)
                     Number* num2 = stack.back();
                     stack.pop_back();
                     Number* num3 = num2->expo(num1);  //assuming for base.log(argument) CHANGE EXP TO LOG
-                    delete num1;  //not sure if
-                    delete num2;  //I need these
                     stack.push_back(num3);
                     i += 3;  //based on log_x:y being x y lb
                 }
@@ -658,7 +664,7 @@ Number* evalShunt(vector<char> expression)
             {
                 if (stack.size() < 1)
                 {
-                    throw exception("There is nothing to take the square root of.");
+                    throw invalid_argument("There is nothing to take the square root of.");
                 }
                 else
                 {
@@ -678,7 +684,7 @@ Number* evalShunt(vector<char> expression)
             {
                 if (stack.size() < 1)
                 {
-                    throw exception("There is nothing to take nth root of.");
+                    throw invalid_argument("There is nothing to take nth root of.");
                 }
                 else
                 {
@@ -703,6 +709,8 @@ Number* evalShunt(vector<char> expression)
             }
 
         }
+        printNumberStack(stack);
+        cout << endl;
     }
     return stack[0];
 }
@@ -712,12 +720,20 @@ Number* evalShunt(vector<char> expression)
 
 int main()
 {
-	string in = "1 + 2 + pi + e";
+	string in = "3 + 2";
 	vector<char> test;
 	test = shunt(in, true);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
 	cout<<"Final:  ";
 	printVectorChar(test);
+	cout << endl;
+	Number* num = evalShunt(test);
+	num->print();
+
+	/*Basic* a = new Basic(7);
+	Basic* b = new Basic(12);
+	Number* num = a->add(b);
+	num->print();*/
 
 	/*bool debug  = false;
 
