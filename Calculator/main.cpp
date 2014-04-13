@@ -30,12 +30,14 @@ vector<char> shunt(string expression, bool debug)
 	vector<char> output;
 	vector<char> stack;
 	vector<char> error;
-	string ERROR = "ERROR";
-	string erSqrt = ": You did not input the square root operator correctly!";
-	string erLog = ": You did not input the log operator correctly!";
-	string erPer = ": Unbalanced parentheses!";
-	string erNotValid = ": You entered an invalid character!";
-	string erPi = ": Enter pi as pi and not p.";
+	string ERROR		 = "ERROR: ";
+	string erSqrt		 = "You did not input the square root operator correctly! Input as sqrt:n!";
+	string erLog		 = "You did not input the log operator correctly! Input as log_b:n!";
+	string erPer 		 = "Unbalanced parentheses!";
+	string erNotValid	 = "You entered an invalid character!";
+	string erPi 		 = "Enter pi as pi and not p!";
+	string erI			 = "No complex numbers!";
+	string erNrt		 = "That is not valid n for nrt! Integers only!";
 	int j = 0;
 
 	stack.push_back(' '); //initialize stack, otherwise program crash if the expression does not start with '('
@@ -50,7 +52,6 @@ vector<char> shunt(string expression, bool debug)
 	//Precedence of operations
 	int precedenceIn = 0;
 	int precedenceSt = 0;
-	int peren = 4;
 	int logpre = 3;
 	int exp = 3;
 	int mult = 2;
@@ -86,7 +87,7 @@ vector<char> shunt(string expression, bool debug)
 		printVectorChar(output);
 		}
 
-		//check if valid
+		//check if valid, there's probably a more eye pleasing way to do this..
 		if(!isdigit(input[i])&&input[i] != '+'&&input[i] != '-'&&input[i] != '*'&&input[i] != '/'
 				&&input[i] != 's'&&input[i] != 'q'&&input[i] != 'r'&&input[i] != 't'&&input[i] != 'l'
 						&&input[i] != 'o'&&input[i] != 'g'&&input[i] != '_'&&input[i] != ':'&&input[i] != '^'
@@ -119,8 +120,7 @@ vector<char> shunt(string expression, bool debug)
 
 		//check for log
 		if(input[i] == 'l')
-		{	//base is a digit/e/pi
-			/*&&(isdigit(input[i+4])||input[i+4] == 'e'||(input[i+4] == 'p'&&input[i+5] == 'i'))&&(input[i+5] == ':'||input[i+6] == ':')*/
+		{
 			if(input[i+1] == 'o'&&input[i+2] == 'g'&&input[i+3] == '_')
 			{
 				log = true;
@@ -135,9 +135,55 @@ vector<char> shunt(string expression, bool debug)
 			}
 		}
 
+		//check for pi
+		if(input[i] == 'p')
+		{
+			if(input[i+1] != 'i')
+			{
+				for(int i = 0; (unsigned int)i < erPi.size(); i++)
+				{
+						error.push_back(erPi[i]);
+				}
+				return error;
+			}
+			else if(input[i+2] == 'r'&&input[i+3] == 't') //Check to see if being used in nrt
+			{
+				for(int i = 0; (unsigned int)i < erNrt.size(); i++)
+				{
+						error.push_back(erNrt[i]);
+				}
+				return error;
+			}
+			else
+				pi = true;
+		}
+
+
+		//check for a lone i
+		if(input[i] == 'i')
+		{
+			for(int i = 0; (unsigned int)i < erI.size(); i++)
+			{
+					error.push_back(erI[i]);
+			}
+			return error;
+		}
+
 		//check for nrt
-		if(isdigit(input[i])&&input[i+1] == 'r'&&input[i+2] == 't'&&input[i+3] == ':')
+		if(input[i+1] == 'r'&&input[i+2] == 't'&&input[i+3] == ':')
+		{
+			if(!isdigit(input[i]))
+			{
+				for(int i = 0; (unsigned int)i < erNrt.size(); i++)
+				{
+						error.push_back(erNrt[i]);
+				}
+				return error;
+			}
+			else
 			nrt = true;
+		}
+
 
 		//Put a space in the output stack
 		if ((input[i] == ' '||input[i] == ':')&& output.back()!= ' ')
@@ -146,7 +192,7 @@ vector<char> shunt(string expression, bool debug)
 		}
 
 		//Put the digit in the output stack
-		else if ((isdigit(input[i])||input[i] == 'e' || (input[i] == 'p'&&input[i+1] == 'i'))&&!nrt)
+		else if ((isdigit(input[i])||input[i] == 'e'||input[i] == 'p')&&!nrt)
 		{
 			if(input[i] == 'p')
 			{
@@ -177,7 +223,6 @@ vector<char> shunt(string expression, bool debug)
 			//No operators on the stack
 			if(stack.back() == ' ')
 			{
-				//sqrt
 				if(sqrt)
 				{
 					stack.push_back('s');
@@ -207,12 +252,12 @@ vector<char> shunt(string expression, bool debug)
 				case '*': precedenceIn = mult;	break;
 				case '/': precedenceIn = div; 	break;
 				case '^': precedenceIn = exp; 	break;
-				//case '(': precedenceIn = peren; break;
 				case 's': if(sqrt){precedenceIn = exp;} break;
 				case 'l': if(log){precedenceIn = logpre;} 	break;
 				default: precedenceIn = 0;		break;}
 				if(input[i+1] == 'r') //nrt cant be checked above
 					precedenceIn = exp;
+
 				//Precedence comparing to
 				switch(stack.back()){
 				case '+': precedenceSt = add;	break;
@@ -221,7 +266,6 @@ vector<char> shunt(string expression, bool debug)
 				case '/': precedenceSt = div;	break;
 				case '^': precedenceSt = exp;	break;
 				case 's': precedenceSt = exp;   break;
-				//case '(': precedenceSt = peren; break;
 				default: precedenceSt = 0;		break;}
 				//check if log and nrt in stack since it cant be checked in the switch
 				if(stack[stack.size()-2] == 'l')
@@ -368,6 +412,7 @@ vector<char> shunt(string expression, bool debug)
 
 	}
 
+	//everything is done, put what's left on the stack on the output
 	int size = stack.size();
 	for(int i = 0; i < size; i++)
 	{
@@ -411,6 +456,7 @@ vector<char> shunt(string expression, bool debug)
 		}
 	}
 
+	//Unbalanced parentheses
 	for(int i = 0; (unsigned int)i < output.size(); i++)
 	{
 		if(output[i] == '(' || output[i] == ')')
@@ -432,15 +478,17 @@ void help()
 	char selection;
 	while(true)
 	{
-	cout<<endl<<"What do you need help with?"<<endl;
-	cout<<"1. Operators"
+	cout<<endl<<"What do you need help with?";
+	cout<<endl<<"1. Operators"
 		<<endl<<"2. Square root"
 		<<endl<<"3. N root"
 		<<endl<<"4. Logarithms"
 		<<endl<<"5. Examples"
 		<<endl<<"0. Quit";
+
 	cout<<endl<<endl<<"Input your selection: ";
 	cout<<endl;
+
 	cin>>selection;
 	cin.ignore();
 
@@ -461,7 +509,9 @@ void help()
 
 	case '5': cout<<"Here are some example inputs for this calculator:"<<endl<<"(1 + 2) / 3"<<endl<<"sqrt:4 + log_2:4"
 			<<endl<<"2 ^ (10 / 2) * 4rt:16"<<endl;	break;
+
 	case '0': cout<<"Have fun!"<<endl; return;
+
 	default : cout<<"That is not a valid selection!"<<endl; break;
 	}
 	}
@@ -490,11 +540,13 @@ void mode(bool &debug)
 				  else
 				  {
 					  debug = true;
-					  cout<<endl<<"Debug mode has been tuned on."<<endl;;
+					  cout<<endl<<"Debug mode has been turned on."<<endl;;
 				  }
 					break;
+
 		case '0': cout<<endl<<"Have fun!"<<endl;
 				cout<<debug; return;
+
 		default : cout<<endl<<"That is not a valid selection!"<<endl; break;
 		}
 
@@ -720,7 +772,8 @@ Number* evalShunt(vector<char> expression)
 
 int main()
 {
-	string in = "3 + 2";
+	//for testing
+	string in = "1 + ert:2";
 	vector<char> test;
 	test = shunt(in, true);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
@@ -735,6 +788,8 @@ int main()
 	Number* num = a->add(b);
 	num->print();*/
 
+
+	//Menu
 	/*bool debug  = false;
 
 
@@ -745,6 +800,7 @@ int main()
 		string blah;
 		vector<char> test;
 		char selection;
+
 		cout<<endl<<"What do you want to do?";
 		cout<<endl<<"1. Input your expression"<<
 		endl<<"2. Past results and set ANS"<<
@@ -752,8 +808,10 @@ int main()
 		endl<<"4. Change modes"<<
 		endl<<"0. Quit"<<
 		endl<<endl<<"Input your selection: ";
+
 		cin >> selection;
 		cin.ignore();
+
 		switch(selection)
 		{
 		case '1': cout<<"Input your expression: ";
@@ -762,10 +820,15 @@ int main()
 						cout<<endl<<"Input:  "<<in<<endl;
 						cout<<"Final:  ";
 						printVectorChar(test);break;
+
 		case '2': cout<<"Under construction!"<<endl; break;//memory()
-		case '3': help(); break;//help()
+
+		case '3': help(); break;
+
 		case '4': mode(debug); break;
+
 		case '0': cout<<endl<<"Good bye!"; return 0;
+
 		default: cout<<"You did not input a valid selection!"<<endl; break;
 		}
 
