@@ -33,7 +33,9 @@ class Number{
         //for exponent class
         virtual Number* getBase() = 0;
 
-        virtual ~Number();   //had to add a virtual destructor
+        virtual ~Number()  //had to add a virtual destructor
+        {
+        }
 
 };
 

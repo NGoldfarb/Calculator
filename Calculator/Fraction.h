@@ -11,7 +11,7 @@ class Fraction :public Number{
     public:
 
         Fraction(Number*, Number*);
-        ~Fraction();
+        virtual ~Fraction();
 
         Number* numerator;
         Number* denominator;
@@ -41,6 +41,7 @@ class Fraction :public Number{
 
         //for exponent class
         Number* getBase();
+
 };
 
 #endif /* FRACTION_H */

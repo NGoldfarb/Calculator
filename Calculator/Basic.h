@@ -14,7 +14,7 @@ class Basic : public Number{
         string type;
 
         Basic(int);
-        ~Basic();
+        virtual ~Basic();
 
         Number* add(Number*);
         Number* subtract(Number*);

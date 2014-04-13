@@ -7,6 +7,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "Number.h"
+#include "Basic.h"
+#include "Fraction.h"
+#include <stdexcept>
 using namespace std;
 
 void printVectorChar(vector<char> toPrint)
@@ -500,8 +504,8 @@ void mode(bool &debug)
 Number* evalShunt(vector<char> expression)
 {
     vector<Number*> stack;
-    int i = 0;  //maybe do if(expression[i] == ' ') i++ to account for spaces
-    while ((unsigned int)i < expression.size())  //could possibly do for loop with extra ++'s instead
+    int i = 0;
+    while ((unsigned int)i < expression.size())
     {  //need to initialize basics or irrationals to numbers
         if ('0' <= expression[i] && expression[i] <= '9' && expression[i + 1] != 'r')  //if next token is digit and not root
         {
@@ -631,7 +635,6 @@ Number* evalShunt(vector<char> expression)
                     i += 2;
                 }
             }
-            // need log_x:y to be in form x y log or x y l
             else if (expression[i] == 'l')  //performs logarithm on top two Numbers of stack
             {
                 if (stack.size() < 2)  //make sure there is enough on the stack
@@ -663,7 +666,7 @@ Number* evalShunt(vector<char> expression)
                     stack.pop_back();
                     Number* a1 = new Basic(1);
                     Number* a2 = new Basic(2);
-                    Number* half = new Fraction(a1, a2);  //assuming Fraction(int num, int denom)
+                    Number* half = new Fraction(a1, a2);  //assuming Fraction(Number* num, Number* denom)
                     Number* num2 = num1->expo(half);
                     delete num1;
                     delete half;
@@ -696,7 +699,7 @@ Number* evalShunt(vector<char> expression)
             }
             else  //maybe Nikita took care of this
             {
-                throw exception("Something's messed up.");
+                //throw exception("Something's messed up.");
             }
 
         }

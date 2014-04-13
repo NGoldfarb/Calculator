@@ -1,12 +1,13 @@
 #include "Fraction.h"
 #include "Basic.h"
-#include "Irrational.h"
+#include <stdexcept>
+//#include "Irrational.h"
 using namespace std;
 
 Fraction::Fraction(Number* a, Number* b){
     if (b->getValue() == 0){
 
-        throw exception("Nice try, dividing by zero");
+        //throw exception("Nice try, dividing by zero");
     }
 
     else{
@@ -15,6 +16,9 @@ Fraction::Fraction(Number* a, Number* b){
         denominator = b;
         type = "fraction";
     }
+}
+Fraction::~Fraction()
+{
 }
 
 Number* Fraction::getNum(){

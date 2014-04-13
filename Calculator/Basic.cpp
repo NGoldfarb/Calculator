@@ -4,6 +4,10 @@ Basic::Basic(int n){
     value = n;
     type = "basic";
 }
+Basic::~Basic()
+{
+
+}
 
 Number* Basic::add(Number* n){
     Basic* x = new Basic(value + n->getValue());
