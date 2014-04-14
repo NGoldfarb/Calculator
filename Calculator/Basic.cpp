@@ -55,7 +55,7 @@ Number* Basic::multiply(Number* n){  //updated for when n is a fraction
     }
 }
 
-Number* Basic::divide(Number* n){   //only works for Basics
+Number* Basic::divide(Number* n){   //only works for Basics and Fractions
     if(n->getType() == "Basic")
     {
     	if (value%n->getValue() == 0)
@@ -79,18 +79,46 @@ Number* Basic::divide(Number* n){   //only works for Basics
         n->setDen(temp);
         return multiply(n);
     }
-    return n;
+    return n;  //need a return statement
 }
 
 Number* Basic::expo(Number* n){  //needs further implentation if the parameter number is not a basic or is negative etc
-    int a = 1;
-    int b = 1;
-    while (a < n->getValue() + 1){
-        b *= value;
-        a++;
+    if(n->getType() == "Basic")
+    {
+    	if(n->getValue() < 0)
+    	{
+    		return negExpo(n);
+    	}
+    	else
+    	{
+    		int answer = 1;
+    		for(int i = 1; i <= n->getValue(); i++)
+    		{
+    		answer *= value;
+    		}
+    		Number* answer2 = new Basic(answer);
+    		delete n;
+    		delete this;
+    		return answer2;
+    	}
     }
-    Basic* d = new Basic(b);
-    return d;
+    else if(n->getType() == "Fraction")
+    {
+    	Number* den = new Basic(n->getDen()->getValue());   //do first because n will be deleted
+    	Number* base = expo(n->getNum());
+    	Number* one = new Basic(1);
+    	Number* power = new Fraction(one, den);
+    	//Number* answer = new Exponent(base, power);    //need exponent class
+    	//return answer;
+    }
+    return n;   //needs return statement outside if
+}
+Number* Basic::negExpo(Number* n)
+{
+	Number* num = new Basic(1);
+	n->setValue(n->getValue() * (-1));
+	Number* answer = num->divide(expo(n));
+	return answer;
 }
 
 /*Number* Basic::simplifyHelper(){

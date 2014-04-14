@@ -26,6 +26,7 @@ class Basic : public Number{
         //Number* simplify(Number*,int);
         void simplify();
         Number* expo(Number*);
+        Number* negExpo(Number*);
 
         void print();
         string getType();

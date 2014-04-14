@@ -100,12 +100,43 @@ Number* Fraction::multiply(Number* a){
     return a;
 }
 
-Number* Fraction::divide(Number* a){
-    return this;
+Number* Fraction::divide(Number* a)
+{
+	if(a->getType() == "Basic")
+	{
+		setDen(denominator->multiply(a));  //should delete denominator and a
+		simplify();
+		return this;
+	}
+	else if(a->getType() == "Fraction")
+	{
+		Number* temp = a->getNum();
+		a->setNum(a->getDen());
+		a->setDen(temp);
+		return multiply(a);
+	}
+	return a;  //need a return statement outside if's
 }
 
-Number* Fraction::expo(Number* a){
-    return this;
+Number* Fraction::expo(Number* n){
+    if(n->getType() == "Basic")
+    {
+    	Number* powTemp = new Basic(n->getValue());   //since n will be deleted
+    	Number* num = numerator->expo(n);   //n is gone after this
+    	Number* den = denominator->expo(powTemp);
+    	Number* answer = new Fraction(num, den);
+    	//delete this;   //doesn't work when this line is uncommented, not sure why, might cause memory leak
+    	return answer;
+    }
+    else if(n->getType() == "Fraction")
+    {
+    	Number* base = expo(n->getNum());   //not sure how this interacts with n->getDen() below
+    	Number* one = new Basic(1);
+    	Number* power = new Fraction(one, n->getDen());
+    	//Number* answer = new Exponent(base, power);  //need exponent class
+    	//return answer;
+    }
+    return n;   //need a return statement outside if's
 }
 
 /*Number* Fraction::simplifyHelper(){    // do we want this to be void? - Zach

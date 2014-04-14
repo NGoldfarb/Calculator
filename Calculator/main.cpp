@@ -10,6 +10,7 @@
 #include "Number.h"
 #include "Basic.h"
 #include "Fraction.h"
+#include "Irrational.h"
 #include <stdexcept>
 using namespace std;
 
@@ -73,6 +74,8 @@ vector<char> shunt(string expression, bool debug)
 		bool pi = false;
 		bool log = false;
 		bool nrt = false;
+		bool neg = false;
+		bool ans = false;
 
 		if(debug)
 		cout<< endl<< j;
@@ -94,11 +97,28 @@ vector<char> shunt(string expression, bool debug)
 								&&input[i] != 'r'&&input[i] != 't'&&input[i] != ' '&&input[i] != '('&&input[i] != ')'
 										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e')
 		{
-			for(int j = 0; (unsigned int)j < erNotValid.size(); j++)
-			{
-					error.push_back(erNotValid[j]);
-			}
-			return error;
+			throw invalid_argument("You entered an invalid character!");
+		}
+
+		//check if starting with a space
+		if(input[i] == ' '&&output.size() == 0)
+		{
+			throw invalid_argument("Don't start the expression with a space!");
+		}
+
+		//check for negative number
+		if(input[i] == '-'&&(isdigit(input[i+1])||input[i+1] == 'p'||input[i+1] == 'e'))
+		{
+			neg = true;
+		}
+
+		//check for ans
+		if(input[i] == 'a')
+		{
+			if(input[i+1] == 'n'&&input[i+2] == 's')
+				ans = true;
+			else
+				throw invalid_argument("You did not input ans correctly!");
 		}
 
 		//check for sqrt:n
@@ -220,6 +240,11 @@ vector<char> shunt(string expression, bool debug)
 		//If an operator
 		else if(input[i] == '+'||input[i] == '-'||input[i] == '*'||input[i] == '/'||input[i] == '^'||input[i] == 'l'||sqrt||log||nrt)
 		{
+			//Check for spaces before and after an operator
+			if((input[i-1] != ' '||input[i+1] != ' ')&&!neg&&!nrt&&!sqrt)
+			{
+				throw invalid_argument("You need a space infront and behind an operator!");
+			}
 			//No operators on the stack
 			if(stack.back() == ' ')
 			{
@@ -773,7 +798,8 @@ Number* evalShunt(vector<char> expression, bool debug)
 int main()
 {
 	//for testing
-	string in = "1 +1";
+	try{
+	string in = "(15 / 9) ^ 2";
 	vector<char> test;
 	test = shunt(in, false);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
@@ -782,12 +808,29 @@ int main()
 	cout << endl;
 	Number* num = evalShunt(test, false);
 	num->print();
+	}
+	catch (exception& e){
+		cout << e.what() << endl;
+	}
 
 	/*Basic* a = new Basic(7);
 	Basic* b = new Basic(12);
 	Fraction* frac = new Fraction(a, b);
 	int c = frac->getGCD(44, 66);
 	cout << c;*/
+
+	//Number* b = new Basic(1);
+	//Number* q = new Basic(2);
+	//Number* n1 = new Irrational('p',q,b);
+	//Number* n2 = new Irrational('p',b,b);
+
+	//Number* n3 = n1->add(n2); // 2pi + pi
+
+	//n1->print();
+	//n3->print();  //3pi
+
+	//n3->print();
+
 
 
 	//Menu
@@ -798,7 +841,7 @@ int main()
 	while(true)
 	{
 		string in;
-		string blah;
+
 		vector<char> test;
 		char selection;
 
@@ -817,10 +860,21 @@ int main()
 		{
 		case '1': cout<<"Input your expression: ";
 						getline(cin, in);
-						test = shunt(in, debug);
-						cout<<endl<<"Input:  "<<in<<endl;
-						cout<<"Final:  ";
-						printVectorChar(test);break;
+						try{
+								test = shunt(in, debug);
+								if(debug)
+								{
+								cout<<endl<<endl<<"Input:  "<<in<<endl;
+								cout<<"Final:  ";
+								printVectorChar(test);
+								}
+								cout<<endl;
+								num = evalShunt(test, debug);
+								cout<<"Result: ";
+								num->print();}
+						catch(exception& e){
+								cout<<endl<<"ERROR: "<<e.what();}
+						break;
 
 		case '2': cout<<"Under construction!"<<endl; break;//memory()
 
