@@ -562,14 +562,8 @@ void printNumberStack(vector<Number*> stack)
 	}
 }
 
-Number* evalShunt(vector<char> expression)
+Number* evalShunt(vector<char> expression, bool debug)
 {
-	if(expression[0] == 'E' && expression[1] == 'R' && expression[2] == 'R' && expression[3] == 'O' && expression[4] == 'R')
-	{
-		printVectorChar(expression);
-		Basic* error = new Basic(34404);   //probably should find something better to do for this
-		return error;
-	}
     vector<Number*> stack;
     int i = 0;
     while ((unsigned int)i < expression.size())
@@ -779,14 +773,14 @@ Number* evalShunt(vector<char> expression)
 int main()
 {
 	//for testing
-	string in = "7 / (3 / 4)";
+	string in = "1 +1";
 	vector<char> test;
 	test = shunt(in, false);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
 	cout<<"Final:  ";
 	printVectorChar(test);
 	cout << endl;
-	Number* num = evalShunt(test);
+	Number* num = evalShunt(test, false);
 	num->print();
 
 	/*Basic* a = new Basic(7);
