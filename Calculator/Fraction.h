@@ -31,6 +31,7 @@ class Fraction :public Number{
         Number* simplify(Number*, int);
         Number* simplifyHelper();
         Number* expo(Number*);
+        Number* log(Number*);
 
         void print();
         string getType();

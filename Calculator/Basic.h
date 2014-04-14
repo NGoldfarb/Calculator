@@ -27,6 +27,7 @@ class Basic : public Number{
         void simplify();
         Number* expo(Number*);
         Number* negExpo(Number*);
+        Number* log(Number*);
 
         void print();
         string getType();

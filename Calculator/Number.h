@@ -22,6 +22,7 @@ class Number{
         //virtual Number* simplifyHelper() = 0;
         virtual void simplify()=0;
         virtual Number* expo(Number*) = 0;
+        virtual Number* log(Number*) = 0;
         virtual string getType() = 0;
         virtual void print() = 0;
         virtual Number* getNum()=0;

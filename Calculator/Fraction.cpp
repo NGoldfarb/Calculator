@@ -1,7 +1,7 @@
 #include "Fraction.h"
 #include "Basic.h"
 #include <stdexcept>
-#include <math.h>   //for sqrt
+//#include <math.h>   //for sqrt
 //#include "Irrational.h"
 using namespace std;
 
@@ -136,7 +136,12 @@ Number* Fraction::expo(Number* n){
     	//Number* answer = new Exponent(base, power);  //need exponent class
     	//return answer;
     }
-    return n;   //need a return statement outside if's
+    return n;   //need a return statement outside ifs
+}
+
+Number* Fraction::log(Number* a)
+{
+	return a;
 }
 
 /*Number* Fraction::simplifyHelper(){    // do we want this to be void? - Zach

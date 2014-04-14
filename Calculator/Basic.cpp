@@ -104,6 +104,18 @@ Number* Basic::expo(Number* n){  //needs further implentation if the parameter n
     }
     else if(n->getType() == "Fraction")
     {
+    	if(n->getNum()->getValue() != 1)
+    	{
+    		Number* den = new Basic(n->getDen()->getValue());   //do first because n will be deleted
+    		Number* base = expo(n->getNum());
+    		Number* one = new Basic(1);
+    		Number* power = new Fraction(one, den);
+    		return base->expo(power);
+    	}
+    	else
+    	{
+
+    	}
     	Number* den = new Basic(n->getDen()->getValue());   //do first because n will be deleted
     	Number* base = expo(n->getNum());
     	Number* one = new Basic(1);
@@ -119,6 +131,28 @@ Number* Basic::negExpo(Number* n)
 	n->setValue(n->getValue() * (-1));
 	Number* answer = num->divide(expo(n));
 	return answer;
+}
+
+Number* Basic::log(Number* arg)   //works when base and argument are both basic, answer is basic
+{
+	if(arg->getType() == "Basic")
+	{
+		int argument = arg->getValue();
+		int counter = 0;
+		while(argument%value == 0 && argument != 1)
+		{
+			counter++;
+			argument /= value;
+		}
+		if(argument == 1)
+		{
+			Basic* answer = new Basic(counter);
+			delete arg;
+			delete this;
+			return answer;
+		}
+	}
+	return arg;
 }
 
 /*Number* Basic::simplifyHelper(){

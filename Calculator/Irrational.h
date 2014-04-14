@@ -25,6 +25,7 @@ Number* divide(Number*);
 char getCharValue();
 Number* simplifyHelper();
 Number* expo(Number*);
+Number* log(Number*);
 string getType();
 void print();
 Number* getNum();

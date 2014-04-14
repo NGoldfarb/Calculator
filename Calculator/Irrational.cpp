@@ -6,7 +6,7 @@ Irrational::Irrational(char c,Number* n, Number* n1){
 value = c;
 type = "irrational";
 
-
+b1 = new Basic(1);
 coef = n;
 exp = n1;
 }
@@ -87,6 +87,11 @@ return b1;
 
 Number* Irrational::expo(Number* a){
 return b1;
+}
+
+Number* Irrational::log(Number* a)
+{
+	return a;
 }
 
 char Irrational::getCharValue(){

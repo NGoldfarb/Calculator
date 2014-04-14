@@ -95,7 +95,7 @@ vector<char> shunt(string expression, bool debug)
 				&&input[i] != 's'&&input[i] != 'q'&&input[i] != 'r'&&input[i] != 't'&&input[i] != 'l'
 						&&input[i] != 'o'&&input[i] != 'g'&&input[i] != '_'&&input[i] != ':'&&input[i] != '^'
 								&&input[i] != 'r'&&input[i] != 't'&&input[i] != ' '&&input[i] != '('&&input[i] != ')'
-										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e')
+										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e'&&input[i] != 'n'&&input[i]!= 's')
 		{
 			throw invalid_argument("You entered an invalid character!");
 		}
@@ -241,7 +241,7 @@ vector<char> shunt(string expression, bool debug)
 		else if(input[i] == '+'||input[i] == '-'||input[i] == '*'||input[i] == '/'||input[i] == '^'||input[i] == 'l'||sqrt||log||nrt)
 		{
 			//Check for spaces before and after an operator
-			if((input[i-1] != ' '||input[i+1] != ' ')&&!neg&&!nrt&&!sqrt)
+			if((input[i-1] != ' '||input[i+1] != ' ')&&!neg&&!nrt&&!sqrt&&!log)
 			{
 				throw invalid_argument("You need a space infront and behind an operator!");
 			}
@@ -617,23 +617,36 @@ Number* evalShunt(vector<char> expression, bool debug)
         }
         else if (expression[i] == 'e')  //if next token is e
         {
-            /*Number* y = new Basic(1);
-            Number* z = new Basic(1)
+            Number* y = new Basic(1);
+            Number* z = new Basic(1);
             Number* e = new Irrational('e', y, z);   //update when irrational constructor known
             stack.push_back(e);
-            i += 2;*/
+            i += 2;
         }
         else if (expression[i] == 'p')  //if next token is pi
         {
-            /* Number * y = new Basic(1);
-            Number* z = new Basic(1)
+            Number * y = new Basic(1);
+            Number* z = new Basic(1);
             Number* pi = new Irrational('p', y, z);  //assuming irrational(isPi)
             stack.push_back(pi);
-            i += 3;*/
+            i += 3;
         }
+        /*else if (expression[i] == 'a')  //works for last answer  //put in exception for when ans is unavailable
+        {
+        	Number* prevAns = memory->back();
+        	stack.push_back(prevAns);
+        	i += 2;
+        }*/
         else if (expression[i] == ' ') //next token is space, increment i
         {
-            i++;
+            if(expression[i+1] == ' ')
+            {
+            	break;
+            }
+            else
+            {
+            	i++;
+            }
         }
         else  //next token is operator or error
         {
@@ -734,7 +747,7 @@ Number* evalShunt(vector<char> expression, bool debug)
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
-                    Number* num3 = num2->expo(num1);  //assuming for base.log(argument) CHANGE EXP TO LOG
+                    Number* num3 = num2->log(num1);  //assuming for base.log(argument) CHANGE EXP TO LOG
                     stack.push_back(num3);
                     i += 3;  //based on log_x:y being x y lb
                 }
@@ -789,6 +802,7 @@ Number* evalShunt(vector<char> expression, bool debug)
         //printNumberStack(stack);
         //cout << endl;
     }
+    //memory->push_back(stack[0]);
     return stack[0];
 }
 
@@ -798,8 +812,9 @@ Number* evalShunt(vector<char> expression, bool debug)
 int main()
 {
 	//for testing
+	//vector<Number*>* memory = new vector<Number*>();
 	try{
-	string in = "(15 / 9) ^ 2";
+	string in = "";
 	vector<char> test;
 	test = shunt(in, false);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
