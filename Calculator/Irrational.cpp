@@ -12,20 +12,47 @@ exp = n1;
 }
 
 Number* Irrational::add(Number* a){
-if (value == a->getCharValue()&&exp == a->getExp()){
-if (coef->getType() == "basic"&&a->getCoef()->getType() == "basic"){
-Number* b1 = new Basic(coef->add(a->getCoef())->getValue());
-Number* b2 = new Irrational(value, b1, exp);
-return b2;
-}
-if (coef->getType() == "fraction"&&a->getCoef()->getType() == "fraction"){
-Number* b1 =coef->add(a->getCoef());
-Number* b2 = new Irrational(value, b1, exp);
-return b2;
-}
+	cout<<"test";
 
-}
-return b1;
+	/*if(this->getType() == a->getType())
+	{
+		if(this->exp == a->getExp())
+		{
+			Number* coef = new Basic(this->coef->add(a->getCoef()));
+			Number* b = new Irrational(this->value,coef,this->exp);
+		}
+	}
+
+	return b;*/
+
+
+
+
+
+
+
+
+
+
+
+	/*
+	if (this->value == a->getCharValue()&&this->exp == a->getExp()){
+		if (this->coef->getType() == "basic"&&a->getCoef()->getType() == "basic"){
+			Number* b1 = new Basic(coef->add(a->getCoef())->getValue());
+			Number* b2 = new Irrational(this->value, b1, this->exp);
+			b1->print();
+			return b2;
+		}
+		else if (this->coef->getType() == "fraction"&&a->getCoef()->getType() == "fraction"){
+			Number* b1 =this->coef->add(a->getCoef());
+			b1->print();
+			Number* b2 = new Irrational(this->value, b1, this->exp);
+			return b2;
+		}
+
+	}*/
+	cout<<"test 2";
+	return b1;
 }
 
 Number* Irrational::subtract(Number* a){

@@ -814,8 +814,16 @@ int main()
 
 	Number* b = new Basic(1);
 	Number* q = new Basic(2);
-	Number* n1 = new Irrational('e',q,b);
+	Number* n1 = new Irrational('p',q,b);
+	Number* n2 = new Irrational('p',b,b);
+
+	//Number* n3 = n1->add(n2); // 2pi + pi
+
 	n1->print();
+	//n3->print();  //3pi
+
+	//n3->print();
+
 
 
 	//Menu
