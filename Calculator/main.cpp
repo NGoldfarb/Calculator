@@ -62,6 +62,12 @@ vector<char> shunt(string expression, bool debug)
 
 	int stringSize = expression.size();
 
+	//check if there was input
+	if(stringSize == 0)
+	{
+		throw invalid_argument("You did not input anything!");
+	}
+
 	//Turn string input into vector
 	for(int i = 0; i < stringSize; i++)
 	{
@@ -95,10 +101,11 @@ vector<char> shunt(string expression, bool debug)
 				&&input[i] != 's'&&input[i] != 'q'&&input[i] != 'r'&&input[i] != 't'&&input[i] != 'l'
 						&&input[i] != 'o'&&input[i] != 'g'&&input[i] != '_'&&input[i] != ':'&&input[i] != '^'
 								&&input[i] != 'r'&&input[i] != 't'&&input[i] != ' '&&input[i] != '('&&input[i] != ')'
-										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e'&&input[i] != 'n'&&input[i]!= 's')
+										&&input[i] != 'p'&&input[i] != 'i'&&input[i] != 'e'&&input[i] != 'n'&&input[i]!= 'a')
 		{
 			throw invalid_argument("You entered an invalid character!");
 		}
+
 
 		//check if starting with a space
 		if(input[i] == ' '&&output.size() == 0)
@@ -212,7 +219,7 @@ vector<char> shunt(string expression, bool debug)
 		}
 
 		//Put the digit in the output stack
-		else if ((isdigit(input[i])||input[i] == 'e'||input[i] == 'p')&&!nrt)
+		else if ((isdigit(input[i])||input[i] == 'e'||input[i] == 'p'||(input[i] == 'a'&&ans))&&!nrt)
 		{
 			if(input[i] == 'p')
 			{
@@ -433,7 +440,9 @@ vector<char> shunt(string expression, bool debug)
 		if(log)
 			i = i+3;
 		if(nrt)
-			 i = i+3;
+			i = i+3;
+		if(ans)
+			i = i+3;
 
 	}
 
@@ -811,22 +820,41 @@ Number* evalShunt(vector<char> expression, bool debug)
 
 int main()
 {
+	//vector<Number> memory;
+
+
 	//for testing
-	//vector<Number*>* memory = new vector<Number*>();
-	try{
-	string in = "";
+	string in = "1 * ans";
 	vector<char> test;
-	test = shunt(in, false);
-	cout<<endl<<endl<<"Input:  "<<in<<endl;
-	cout<<"Final:  ";
-	printVectorChar(test);
+
+	try{
+		test = shunt(in, true);
+		cout<<endl<<endl<<"Input:  "<<in<<endl;
+		cout<<"Final:  ";
+		printVectorChar(test);}
+	catch(exception& e){
+		cout<<endl<<"ERROR: "<<e.what();}
+
 	cout << endl;
-	Number* num = evalShunt(test, false);
-	num->print();
-	}
-	catch (exception& e){
-		cout << e.what() << endl;
-	}
+
+	//Number* num = evalShunt(test);
+	//num->print();
+	/*Basic* a = new Basic(7);
+	Basic* b = new Basic(12);
+	Number* num = a->add(b);
+	num->print();*/
+
+	/*Number* b = new Basic(1);
+	Number* q = new Basic(2);
+	Number* n1 = new Irrational('p',q,b);
+	Number* n2 = new Irrational('p',b,b);
+
+	Number* n3 = n1->add(n2); // 2pi + pi
+
+	n1->print();
+	n3->print();  //3pi
+
+	//n3->print();*/
 
 	/*Basic* a = new Basic(7);
 	Basic* b = new Basic(12);
