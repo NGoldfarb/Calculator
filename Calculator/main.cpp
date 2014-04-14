@@ -815,16 +815,53 @@ Number* evalShunt(vector<char> expression, bool debug)
     return stack[0];
 }
 
+void memoryMenu(vector<Number*> memory, int& ans)
+{
+	cout<<endl<<"These are your past outputs, starting with the most recent:"<<endl;
+	for(int i = 0; (unsigned int)i < memory.size(); i++)
+	{
+		cout<<i<<". ";
+		memory[i]->print();
+		cout<<endl;
+	}
 
+	while(true)
+	{
+		cout<<endl<<"What do you want to set as your value for ans?";
+		char selection;
+		cin>>selection;
+		cin.ignore();
+		if(isdigit(selection)&& (int)selection > 47 && (unsigned int)selection <= (47+memory.size()))
+		{
+			ans = (int)selection - 48;
+			cout<<endl<<"ans has been set to result #"<<ans<<endl;
+			break;
+		}
+		else
+		{
+			cout<<endl<<"That is not a valid selection! Please select one of the above results: "<<endl;;
+		}
+	}
+	return;
+}
 
 
 int main()
 {
-	//vector<Number> memory;
+	vector<Number*> memory;
+	int ans;
 
+	Number* n = new Basic(3);
+	Number* b = new Basic(1);
+
+	memory.insert(memory.begin(), n);
+	memory.insert(memory.begin(), n);
+	memory.insert(memory.begin(), b);
+
+	memoryMenu(memory, ans);
 
 	//for testing
-	string in = "1 * ans";
+	/*string in = "1 * ans";
 	vector<char> test;
 
 	try{
@@ -835,7 +872,7 @@ int main()
 	catch(exception& e){
 		cout<<endl<<"ERROR: "<<e.what();}
 
-	cout << endl;
+	cout << endl;*/
 
 	//Number* num = evalShunt(test);
 	//num->print();
@@ -919,7 +956,7 @@ int main()
 								cout<<endl<<"ERROR: "<<e.what();}
 						break;
 
-		case '2': cout<<"Under construction!"<<endl; break;//memory()
+		case '2': memoryMenu(); break;
 
 		case '3': help(); break;
 
