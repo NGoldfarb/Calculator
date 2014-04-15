@@ -926,7 +926,7 @@ void memoryMenu(vector<Number*> memory, int& ans)
 int main()
 {
 	vector<Number*> memory;
-	int ans;
+	int ans = 0;
 
 	/*Number* n = new Basic(3);
 	Number* b = new Basic(1);
@@ -939,14 +939,15 @@ int main()
 
 	//for testing
 	try{
-	string in = "(3 / 2) / 0";
+	string in = "8 ^ (1 / 2)";
 	vector<char> test;
 		test = shunt(in, false);
 		cout<<endl<<endl<<"Input:  "<<in<<endl;
 		cout<<"Final:  ";
 		printVectorChar(test);
 		cout << endl;
-		Number* answer = evalShunt(test, false);
+
+		Number* answer = evalShunt(test, false, memory, ans);
 		answer->print();
 	}
 	catch(exception& e){
@@ -1037,7 +1038,7 @@ int main()
 								printVectorChar(test);
 								}
 								cout<<endl;
-								Number* num = evalShunt(test, debug);
+								Number* num = evalShunt(test, debug, memory, ans);
 								cout<<"Result: ";
 								num->print();}
 						catch(exception& e){

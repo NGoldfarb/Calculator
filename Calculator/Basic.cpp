@@ -1,4 +1,6 @@
 #include "Basic.h"
+#include "Exponent.h"
+#include "Expression.h"
 #include <stdexcept>
 
 Basic::Basic(int n){
@@ -26,6 +28,16 @@ Number* Basic::add(Number* n){
     	delete n;
     	delete this;
     	return z;
+    }
+    else if(n->getType() == "irrational")
+    {
+    	Basic* duplicate = new Basic(value);
+    	vector<Number*> exp;
+    	exp.push_back(duplicate);
+    	exp.push_back(n);
+    	Number* answer = new Expression(exp);
+    	delete this;
+    	return answer;
     }
     else
     {
@@ -150,11 +162,11 @@ Number* Basic::expo(Number* n){  //needs further implentation if the parameter n
     		}
     		int outProduct = 1;
     		int inProduct = 1;
-    		for(int i = 0; i < outFactors.size(); i++)
+    		for(unsigned int i = 0; i < outFactors.size(); i++)
     		{
     			outProduct *= outFactors[i];
     		}
-    		for(int i = 0; i < inFactors.size(); i++)
+    		for(unsigned int i = 0; i < inFactors.size(); i++)
     		{
     			inProduct *= inFactors[i];
     		}
@@ -168,7 +180,8 @@ Number* Basic::expo(Number* n){  //needs further implentation if the parameter n
     		else
     		{
     			Number* in = new Basic(outProduct);
-    			//Exponent answer = new Exponent(out, in, n);  //need exponent
+    			Number* answer = new Exponent(out, in, n);  //need exponent
+    			return answer;
 
     		}
     	}
@@ -179,7 +192,10 @@ Number* Basic::expo(Number* n){  //needs further implentation if the parameter n
     	//Number* answer = new Exponent(base, power);    //need exponent class
     	//return answer;
     }
-    return n;   //needs return statement outside if
+    else
+    {
+    	throw invalid_argument("That operation is currently not supported.");
+    }
 }
 Number* Basic::negExpo(Number* n)
 {
@@ -242,8 +258,15 @@ Number* Basic::log(Number* arg)   //works when base and argument are both basic,
 			delete this;
 			return answer;
 		}
+		else
+		{
+			throw invalid_argument("Logs that do not simplify to integers are currently not supported");
+		}
 	}
-	return arg;
+	else
+	{
+		throw invalid_argument("Logs that do not simplify to integers are currently not supported");
+	}
 }
 
 /*Number* Basic::simplifyHelper(){
