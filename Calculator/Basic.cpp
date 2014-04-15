@@ -114,12 +114,51 @@ Number* Basic::expo(Number* n){  //needs further implentation if the parameter n
     	}
     	else
     	{
+    		int baseInt = value;
+    		int root = n->getDen()->getValue();
+    		vector<int> primeFactors;
+    		factor(baseInt, primeFactors);
+    		vector<int> outFactors, inFactors;
+    		for(unsigned int i = 0 ; i < primeFactors.size(); i++)
+    		{
+    			if(primeFactors[i] == primeFactors[i+root-1])
+    			{
+    				outFactors.push_back(primeFactors[i]);
+    				i += root - 1;
+    			}
+    			else
+    			{
+    				inFactors.push_back(primeFactors[i]);
+    			}
+    		}
+    		int outProduct = 1;
+    		int inProduct = 1;
+    		for(int i = 0; i < outFactors.size(); i++)
+    		{
+    			outProduct *= outFactors[i];
+    		}
+    		for(int i = 0; i < inFactors.size(); i++)
+    		{
+    			inProduct *= inFactors[i];
+    		}
+    		Number* out = new Basic(outProduct);
+    		if(inProduct == 1)
+    		{
+    			//delete n;
+    			//delete this;
+    			return out;
+    		}
+    		else
+    		{
+    			Number* in = new Basic(outProduct);
+    			//Exponent answer = new Exponent(out, in, n);  //need exponent
 
+    		}
     	}
-    	Number* den = new Basic(n->getDen()->getValue());   //do first because n will be deleted
-    	Number* base = expo(n->getNum());
-    	Number* one = new Basic(1);
-    	Number* power = new Fraction(one, den);
+    	//Number* den = new Basic(n->getDen()->getValue());   //do first because n will be deleted
+    	//Number* base = expo(n->getNum());
+    	//Number* one = new Basic(1);
+    	//Number* power = new Fraction(one, den);
     	//Number* answer = new Exponent(base, power);    //need exponent class
     	//return answer;
     }
@@ -131,6 +170,41 @@ Number* Basic::negExpo(Number* n)
 	n->setValue(n->getValue() * (-1));
 	Number* answer = num->divide(expo(n));
 	return answer;
+}
+
+void Basic::factor(int num, vector<int>& primeFactors)  //at end, primeFactors contains prime factors of num in ascending order
+{
+	primeFactors.clear();
+	return factorHelper(num, primeFactors);
+}
+void Basic::factorHelper(int num, vector<int>& primeFactors)
+{
+	if(isPrime(num))
+	{
+		primeFactors.push_back(num);
+	}
+	else
+	{
+		int i = 2;
+		while(!isPrime(i) || num%i != 0)
+		{
+			i++;
+		}
+		primeFactors.push_back(i);
+		factorHelper(num/i, primeFactors);
+	}
+}
+bool Basic::isPrime(int num)
+{
+	double squareRoot = sqrt(num);
+	for(int i = 2; i <= squareRoot; i++)
+	{
+		if (num%i == 0)
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 Number* Basic::log(Number* arg)   //works when base and argument are both basic, answer is basic

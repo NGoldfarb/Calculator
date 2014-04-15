@@ -130,11 +130,27 @@ Number* Fraction::expo(Number* n){
     }
     else if(n->getType() == "Fraction")
     {
-    	Number* base = expo(n->getNum());   //not sure how this interacts with n->getDen() below
-    	Number* one = new Basic(1);
-    	Number* power = new Fraction(one, n->getDen());
-    	//Number* answer = new Exponent(base, power);  //need exponent class
-    	//return answer;
+    	if(n->getNum()->getValue() != 1)  // if power is not of form 1/m
+    	{
+    		Number* powerNum = new Basic(n->getNum()->getValue());  //since n gets deleted next line
+    		Number* nsNum = new Basic(n->getNum()->getValue());  //need this because we can't call n->divide(n->getNum())
+    		Number* newPower = n->divide(nsNum);  //makes newPower into 1/denominator
+    		Number* newFrac = this->expo(powerNum);  //raises this to n's numerator, deletes this and powerNum
+    		return newFrac->expo(newPower);
+    	}
+    	else  //if power is of form 1/m
+    	{  //might be better to use copy constructor
+    		Number* secondPowerNum = new Basic(1);      //since exponenet will get deleted
+    		Number* secondPowerDen = new Basic(n->getDen()->getValue());
+    		Number* secondPower = new Fraction(secondPowerNum, secondPowerDen);
+    		Number* newNum = numerator->expo(n);   //n gets deleted
+    		Number* newDen = denominator->expo(secondPower);  //secondPower gets deleted
+    		Number* answer = new Fraction(newNum, newDen);
+    		delete this;
+    		delete n;
+    		return answer;
+    	}
+
     }
     return n;   //need a return statement outside ifs
 }

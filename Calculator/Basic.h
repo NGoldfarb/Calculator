@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Number.h"
 #include "Fraction.h"
+#include <math.h>
 
 using namespace std;
 
@@ -28,6 +29,10 @@ class Basic : public Number{
         Number* expo(Number*);
         Number* negExpo(Number*);
         Number* log(Number*);
+
+        void factor(int, vector<int>&);
+        void factorHelper(int, vector<int>&);
+        bool isPrime(int);
 
         void print();
         string getType();

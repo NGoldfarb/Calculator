@@ -593,8 +593,16 @@ Number* evalShunt(vector<char> expression, bool debug)
     int i = 0;
     while ((unsigned int)i < expression.size())
     {  //need to initialize basics or irrationals to numbers
-        if ('0' <= expression[i] && expression[i] <= '9' && expression[i + 1] != 'r')  //if next token is digit and not root
+        if ('0' <= expression[i] && expression[i] <= '9' && expression[i+1] != 'r') //if next token is digit and not root
         {
+        	bool neg = false;
+        	if(i > 0)
+        	{
+        			if(expression[i-1] == '-')
+        			{
+        				neg = true;
+        			}
+        	}
             int num = 0;
             int multiplier = 1;  //multiplier for powers of 10
             int counter = 1;   //counts digits
@@ -612,6 +620,10 @@ Number* evalShunt(vector<char> expression, bool debug)
             	i++;
             }
             Number* basic = new Basic(num);
+            if(neg)
+            {
+            	basic->setValue(-1 * basic->getValue());
+            }
             stack.push_back(basic);
             i++;
         }
@@ -637,11 +649,28 @@ Number* evalShunt(vector<char> expression, bool debug)
         	stack.push_back(prevAns);
         	i += 2;
         }*/
-        else if (expression[i] == ' ') //next token is space, increment i
+        else if (expression[i] == ' ') //next token is space, might need to break, subtract, or just increment i
         {
             if(expression[i+1] == ' ')
             {
             	break;
+            }
+            else if(expression[i-1] == '-')
+            {
+            	if (stack.size() < 2)  //make sure there is enough on the stack
+            	{
+            		throw invalid_argument("The subtraction does not have 2 operands.");
+            	}
+            	else
+            	{
+            		Number* num1 = stack.back();
+            	    stack.pop_back();
+            	    Number* num2 = stack.back();
+            	    stack.pop_back();
+            	    Number* num3 = num2->subtract(num1);
+            	    stack.push_back(num3);
+            	    i++;
+            	}
             }
             else
             {
@@ -669,6 +698,7 @@ Number* evalShunt(vector<char> expression, bool debug)
             }
             else if (expression[i] == '-')  //perform subtraction on top two Numbers on stack
             {
+            	i++;/*
                 if (stack.size() < 2)  //make sure there is enough on the stack
                 {
                     throw invalid_argument("The subtraction does not have 2 operands.");
@@ -682,7 +712,7 @@ Number* evalShunt(vector<char> expression, bool debug)
                     Number* num3 = num2->subtract(num1);
                     stack.push_back(num3);
                     i += 2;
-                }
+                }*/
             }
             else if (expression[i] == '*')  //perform multiplication on top two Numbers on stack
             {
@@ -814,7 +844,7 @@ int main()
 	//for testing
 	//vector<Number*>* memory = new vector<Number*>();
 	try{
-	string in = "";
+	string in = "-3 + 4";
 	vector<char> test;
 	test = shunt(in, false);
 	cout<<endl<<endl<<"Input:  "<<in<<endl;
@@ -827,6 +857,14 @@ int main()
 	catch (exception& e){
 		cout << e.what() << endl;
 	}
+
+	/*Basic* b = new Basic(1);
+	vector<int> primes;
+	b->factor(900, primes);
+	for(unsigned int i = 0; i < primes.size(); i++)
+	{
+		cout << primes[i] << endl;
+	}*/
 
 	/*Basic* a = new Basic(7);
 	Basic* b = new Basic(12);
