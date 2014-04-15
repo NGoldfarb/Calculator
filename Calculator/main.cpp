@@ -509,7 +509,7 @@ vector<char> shunt(string expression, bool debug)
 
 void help()
 {
-	char selection;
+	string selection;
 	while(true)
 	{
 	cout<<endl<<"What do you need help with?";
@@ -521,12 +521,25 @@ void help()
 		<<endl<<"0. Quit";
 
 	cout<<endl<<endl<<"Input your selection: ";
-	cout<<endl;
 
-	cin>>selection;
-	cin.ignore();
+	getline(cin, selection);
 
-	switch(selection)
+	while(selection.size() > 1)
+	{
+		cout<<endl<<"That is not a valid selection!"<<endl;
+		cout<<endl<<"What do you need help with?";
+		cout<<endl<<"1. Operators"
+			<<endl<<"2. Square root"
+			<<endl<<"3. N root"
+			<<endl<<"4. Logarithms"
+			<<endl<<"5. Examples"
+			<<endl<<"0. Quit";
+
+		cout<<endl<<endl<<"Input your selection: ";
+		getline(cin, selection);
+	}
+
+	switch(selection[0])
 	{
 	case '1': cout<<"When using operators, such as + - * / ^ make sure to put a space between the operator"
 			" and the numbers being operated on, parentheses do not need spaces."
@@ -554,17 +567,27 @@ void help()
 
 void mode(bool &debug)
 {
-	char selection;
+	string selection;
 	while(true)
 	{
 		cout<<"Available modes:"
 			<<endl<<"1. Debug"
 			<<endl<<"0. Quit"<<endl;
 		cout<<endl<<"Input your selection: ";
-		cin>>selection;
-		cin.ignore();
 
-		switch(selection)
+		getline(cin, selection);
+
+		while(selection.size() > 1)
+		{
+			cout<<endl<<"That is not a valid selection!"<<endl<<endl;
+			cout<<"Available modes:"
+						<<endl<<"1. Debug"
+						<<endl<<"0. Quit"<<endl;
+					cout<<endl<<"Input your selection: ";
+			getline(cin, selection);
+		}
+
+		switch(selection[0])
 		{
 		case '1': if(debug == true)
 				  {
@@ -847,6 +870,13 @@ Number* evalShunt(vector<char> expression, bool debug)
 
 void memoryMenu(vector<Number*> memory, int& ans)
 {
+	if(memory.size() < 1)
+	{
+		cout<<endl<<"You don't have any past results!"<<endl<<endl;
+		return;
+	}
+
+
 	cout<<endl<<"These are your past outputs, starting with the most recent:"<<endl;
 	for(int i = 0; (unsigned int)i < memory.size(); i++)
 	{
@@ -857,13 +887,22 @@ void memoryMenu(vector<Number*> memory, int& ans)
 
 	while(true)
 	{
+
 		cout<<endl<<"What do you want to set as your value for ans?";
-		char selection;
-		cin>>selection;
-		cin.ignore();
-		if(isdigit(selection)&& (int)selection > 47 && (unsigned int)selection <= (47+memory.size()))
+		string selection;
+		getline(cin, selection);
+
+		while(selection.size() > 1)
 		{
-			ans = (int)selection - 48;
+			cout<<endl<<"That is not a valid selection! Please select one of the above results:"<<endl;
+			cout<<endl<<"What do you want to set as your value for ans?";
+			getline(cin, selection);
+		}
+
+
+		if(isdigit(selection[0])&& (int)selection[0] > 47 && (unsigned int)selection[0] <= (47+memory.size()))
+		{
+			ans = (int)selection[0] - 48;
 			cout<<endl<<"ans has been set to result #"<<ans<<endl;
 			break;
 		}
@@ -881,14 +920,14 @@ int main()
 	vector<Number*> memory;
 	int ans;
 
-	Number* n = new Basic(3);
+	/*Number* n = new Basic(3);
 	Number* b = new Basic(1);
 
 	memory.insert(memory.begin(), n);
 	memory.insert(memory.begin(), n);
 	memory.insert(memory.begin(), b);
 
-	memoryMenu(memory, ans);
+	memoryMenu(memory, ans);*/
 
 	//for testing
 	/*string in = "1 * ans";
@@ -952,7 +991,7 @@ int main()
 
 
 	//Menu
-	/*bool debug  = false;
+	bool debug  = false;
 
 
 	cout<<"If this is your first time using this calculator please check out \"Help\""<<endl;
@@ -987,14 +1026,14 @@ int main()
 								printVectorChar(test);
 								}
 								cout<<endl;
-								num = evalShunt(test, debug);
+								Number* num = evalShunt(test, debug);
 								cout<<"Result: ";
 								num->print();}
 						catch(exception& e){
 								cout<<endl<<"ERROR: "<<e.what();}
 						break;
 
-		case '2': memoryMenu(); break;
+		case '2': memoryMenu(memory, ans); break;
 
 		case '3': help(); break;
 
@@ -1005,7 +1044,7 @@ int main()
 		default: cout<<"You did not input a valid selection!"<<endl; break;
 		}
 
-	}*/
+	}
 
 	return 0;
 
