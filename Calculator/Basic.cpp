@@ -68,7 +68,11 @@ Number* Basic::divide(Number* n)
 {
     if(n->getType() == "Basic")
     {
-    	if (value%n->getValue() == 0)
+    	if(n->getValue() == 0)
+    	{
+    		throw invalid_argument("You can't divide by zero!");
+    	}
+    	else if (value%n->getValue() == 0)
     	{
     		Basic* x = new Basic(value / n->getValue());
     		delete n;

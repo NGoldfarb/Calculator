@@ -104,9 +104,16 @@ Number* Fraction::divide(Number* a)
 {
 	if(a->getType() == "Basic")
 	{
-		setDen(denominator->multiply(a));  //should delete denominator and a
-		simplify();
-		return this;
+		if(a->getValue() == 0)
+		{
+			throw invalid_argument("You can't divide by zero!");
+		}
+		else
+		{
+			setDen(denominator->multiply(a));  //should delete denominator and a
+			simplify();
+			return this;
+		}
 	}
 	else if(a->getType() == "Fraction")
 	{
@@ -169,6 +176,11 @@ void Fraction::simplify()
 	int gcd = this->getGCD(numerator->getValue(), denominator->getValue());
 	numerator->setValue(numerator->getValue()/gcd);
 	denominator->setValue(denominator->getValue()/gcd);
+	if(denominator->getValue() < 0)
+	{
+		denominator->setValue(denominator->getValue() * -1);
+		numerator->setValue(numerator->getValue() * -1);
+	}
 }
 int Fraction::getGCD(int min, int max)   //making this static would be better but we can figure that out later
 {

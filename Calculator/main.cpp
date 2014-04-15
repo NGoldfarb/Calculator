@@ -596,7 +596,7 @@ void printNumberStack(vector<Number*> stack)
 	}
 }
 
-Number* evalShunt(vector<char> expression, bool debug)
+Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, int ans)
 {
     vector<Number*> stack;
     int i = 0;
@@ -652,6 +652,12 @@ Number* evalShunt(vector<char> expression, bool debug)
             stack.push_back(pi);
             i += 3;
         }
+        else if (expression[i] == 'a')
+        {
+        	Number* a = memory[ans];
+        	stack.push_back(a);
+        	i += 2;
+        }
         /*else if (expression[i] == 'a')  //works for last answer  //put in exception for when ans is unavailable
         {
         	Number* prevAns = memory->back();
@@ -705,9 +711,34 @@ Number* evalShunt(vector<char> expression, bool debug)
                     i += 2;
                 }
             }
-            else if (expression[i] == '-')  //perform subtraction on top two Numbers on stack
+            else if (expression[i] == '-')
             {
-            	i++;/*
+            	if(expression[i+2] == 'r')  //must be negative nth root, only does single digit roots
+            	{
+            		if (stack.size() < 1)
+            		{
+            			throw invalid_argument("There is nothing to take nth root of.");
+            		}
+            		else
+            		{
+            			int root = expression[i+1] - '0';
+            		    Number* a1 = new Basic(root);
+            		    Number* a2 = new Basic(-1);
+            		    Number* frac = new Fraction(a2, a1);
+
+
+            		    Number* num1 = stack.back();
+            		    stack.pop_back();
+            		    Number* num2 = num1->expo(frac);
+
+            		    stack.push_back(num2);
+            		    i += 5;
+            		                }
+            	}
+            	else
+            	{
+            		i++;
+            	}/*
                 if (stack.size() < 2)  //make sure there is enough on the stack
                 {
                     throw invalid_argument("The subtraction does not have 2 operands.");
@@ -841,7 +872,7 @@ Number* evalShunt(vector<char> expression, bool debug)
         //printNumberStack(stack);
         //cout << endl;
     }
-    //memory->push_back(stack[0]);
+    memory.insert(memory.begin(), stack[0]);
     return stack[0];
 }
 
@@ -908,12 +939,13 @@ int main()
 
 	//for testing
 	try{
-	string in = "2 + e";
+	string in = "(3 / 2) / 0";
 	vector<char> test;
 		test = shunt(in, false);
 		cout<<endl<<endl<<"Input:  "<<in<<endl;
 		cout<<"Final:  ";
 		printVectorChar(test);
+		cout << endl;
 		Number* answer = evalShunt(test, false);
 		answer->print();
 	}
