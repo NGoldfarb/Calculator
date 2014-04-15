@@ -1,3 +1,4 @@
+
 #ifndef IRRATIONAL_H
 #define IRRATIONAL_H
 
@@ -60,3 +61,8 @@ vector<Number*> getVect();
 
 
 #endif /* IRRATIONAL_H */
+
+
+
+
+

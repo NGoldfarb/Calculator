@@ -12,78 +12,94 @@ exp = n1;
 }
 
 Number* Irrational::add(Number* a){
-	cout<<"test";
-
-	/*if(this->getType() == a->getType())
-	{
-		if(this->exp == a->getExp())
-		{
-			Number* coef = new Basic(this->coef->add(a->getCoef()));
-			Number* b = new Irrational(this->value,coef,this->exp);
+	if (value == a->getCharValue()&&exp == a->getExp()){
+		if (coef->getType() == "Basic"&& a->getCoef()->getType() == "Basic"){
+                     int aCoef =a->getCoef()->getValue();
+                     int newCoef =getCoef()->getValue()+ aCoef;
+			Number* b1 = new Basic(newCoef);
+			Number* b2 = new Irrational(value, b1, exp);
+			return b2;
 		}
+		if (coef->getType() == "Fraction"&& a->getCoef()->getType() == "Fraction"){
+                       int d = getCoef()->getValue();
+                       int e = a->getCoef()->getValue();
+                Number* newCoef = new Basic(d);
+                Number* aCoef = new Basic(e);
+                Number*k= new Fraction(newCoef,aCoef);
+               
+			
+			Number* b2 = new Irrational(value,k, exp);
+                      
+			
+return b2;
+		}
+
 	}
-
-	return b;*/
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	if (this->value == a->getCharValue()&&this->exp == a->getExp()){
-		if (this->coef->getType() == "basic"&&a->getCoef()->getType() == "basic"){
-			Number* b1 = new Basic(coef->add(a->getCoef())->getValue());
-			Number* b2 = new Irrational(this->value, b1, this->exp);
-			b1->print();
-			return b2;
-		}
-		else if (this->coef->getType() == "fraction"&&a->getCoef()->getType() == "fraction"){
-			Number* b1 =this->coef->add(a->getCoef());
-			b1->print();
-			Number* b2 = new Irrational(this->value, b1, this->exp);
-			return b2;
-		}
-
-	}*/
-	cout<<"test 2";
 	return b1;
 }
 
-Number* Irrational::subtract(Number* a){
+
+
+Number* Irrational::subtract(Number* a){	
 if (value == a->getCharValue() && exp == a->getExp()){
-if (coef->getType() == "basic"&&a->getCoef()->getType() == "basic"){
-Number* b1 = new Basic(coef->subtract(a->getCoef())->getValue());
-Number* b2 = new Irrational(value, b1, exp);
+		if (coef->getType() == "Basic"&&a->getCoef()->getType() == "Basic"){
+                     int aCoef =a->getCoef()->getValue();
+                     int newCoef=getCoef()->getValue()-aCoef;
+			Number* b1 = new Basic(newCoef);
+			Number* b2 = new Irrational(value, b1, exp);
+			return b2;
+		}
+		if (coef->getType() == "Fraction"&&a->getCoef()->getType() == "Fraction"){
+                int d = getCoef()->getValue();
+                       int e = a->getCoef()->getValue();
+                Number* newCoef = new Basic(d);
+                Number* aCoef = new Basic(e);
+                Number*k= new Fraction(newCoef,aCoef);
+               
+			
+			Number* b2 = new Irrational(value,k, exp);
+                      
+			
 return b2;
-}
-if (coef->getType() == "fraction"&&a->getCoef()->getType() == "fraction"){
-Number* b1 = coef->subtract(a->getCoef());
-Number* b2 = new Irrational(value, b1, exp);
-return b2;
-}
+		
+			
+		}
 
+	}
+	return b1;
 }
-return b1;
-}
-
 Number* Irrational::multiply(Number* a){
 
-if (a->getType() == "basic"){
-Number* x = new Irrational(value, coef->multiply(a), exp);
-return x;
-}
-return b1;
+	if (a->getCoef()->getType() == "Basic"&&getCoef()->getType()=="Basic"){
+
+             int aCoef =a->getCoef()->getValue();
+             int newCoef= getCoef()->getValue() * aCoef;
+		Number* n = new Basic(newCoef);
+              int newExp = getExp()->getValue() + a->getExp()->getValue();
+		Number* e = new Basic(newExp);
+             Number* x = new Irrational(value, n, e);
+              
+		return x;
+	}
+	return b1;
 }
 
 Number* Irrational::divide(Number* a){
-return b1;
+cout<<"hey";
+	if (a->getCoef()->getType() == "Basic"&&getCoef()->getType()=="Basic"){
+cout<<"yes";
+	      int aCoef =a->getCoef()->getValue();
+             int newCoef=getCoef()->getValue();
+             Number*a= new Basic(aCoef);
+             Number*b= new Basic(newCoef);
+              Number* e= new Fraction(b,a);
+ e->simplify();
+return e ;
 }
+
+	return b1;
+}
+
 
 Number* Irrational::expo(Number* a){
 return b1;

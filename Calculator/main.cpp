@@ -578,8 +578,8 @@ void mode(bool &debug)
 				  }
 					break;
 
-		case '0': cout<<endl<<"Have fun!"<<endl;
-				cout<<debug; return;
+		case '0': cout<<endl<<"Have fun!"<<endl<<endl;
+		 return;
 
 		default : cout<<endl<<"That is not a valid selection!"<<endl; break;
 		}
@@ -589,6 +589,7 @@ void mode(bool &debug)
 
 void printNumberStack(vector<Number*> stack)
 {
+	cout<<endl<<"Numbers on stack: ";
 	for(unsigned int i = 0; i < stack.size(); i++)
 	{
 		stack[i]->print();
@@ -600,6 +601,8 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
 {
     vector<Number*> stack;
     int i = 0;
+    if(debug)
+    cout<<endl<<"Evaluating"<<endl;
     while ((unsigned int)i < expression.size())
     {  //need to initialize basics or irrationals to numbers
         if ('0' <= expression[i] && expression[i] <= '9' && expression[i+1] != 'r') //if next token is digit and not root
@@ -869,8 +872,11 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
             }
 
         }
-        //printNumberStack(stack);
-        //cout << endl;
+        if(debug)
+        {
+        printNumberStack(stack);
+        cout << endl;
+        }
     }
     memory.insert(memory.begin(), stack[0]);
     return stack[0];
@@ -928,79 +934,7 @@ int main()
 	vector<Number*> memory;
 	int ans = 0;
 
-	/*Number* n = new Basic(3);
-	Number* b = new Basic(1);
-
-	memory.insert(memory.begin(), n);
-	memory.insert(memory.begin(), n);
-	memory.insert(memory.begin(), b);
-
-	memoryMenu(memory, ans);*/
-
-	//for testing
-	try{
-	string in = "8 ^ (1 / 2)";
-	vector<char> test;
-		test = shunt(in, false);
-		cout<<endl<<endl<<"Input:  "<<in<<endl;
-		cout<<"Final:  ";
-		printVectorChar(test);
-		cout << endl;
-
-		Number* answer = evalShunt(test, false, memory, ans);
-		answer->print();
-	}
-	catch(exception& e){
-		cout<<endl<<"ERROR: "<<e.what();}
-
 	cout << endl;
-
-	//Number* num = evalShunt(test);
-	//num->print();
-	/*Basic* a = new Basic(7);
-	Basic* b = new Basic(12);
-	Number* num = a->add(b);
-	num->print();*/
-
-	/*Number* b = new Basic(1);
-	Number* q = new Basic(2);
-	Number* n1 = new Irrational('p',q,b);
-	Number* n2 = new Irrational('p',b,b);
-
-	Number* n3 = n1->add(n2); // 2pi + pi
-
-	n1->print();
-	n3->print();  //3pi
-
-	//n3->print();*/
-
-	/*Basic* b = new Basic(1);
-	vector<int> primes;
-	b->factor(900, primes);
-	for(unsigned int i = 0; i < primes.size(); i++)
-	{
-		cout << primes[i] << endl;
-	}*/
-
-	/*Basic* a = new Basic(7);
-	Basic* b = new Basic(12);
-	Fraction* frac = new Fraction(a, b);
-	int c = frac->getGCD(44, 66);
-	cout << c;*/
-
-	//Number* b = new Basic(1);
-	//Number* q = new Basic(2);
-	//Number* n1 = new Irrational('p',q,b);
-	//Number* n2 = new Irrational('p',b,b);
-
-	//Number* n3 = n1->add(n2); // 2pi + pi
-
-	//n1->print();
-	//n3->print();  //3pi
-
-	//n3->print();
-
-
 
 	//Menu
 	bool debug  = false;
