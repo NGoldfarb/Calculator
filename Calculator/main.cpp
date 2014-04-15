@@ -700,7 +700,7 @@ Number* evalShunt(vector<char> expression, bool debug)
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
-                    Number* num3 = num1->add(num2);
+                    Number* num3 = num2->add(num1);
                     stack.push_back(num3);
                     i += 2;
                 }
@@ -735,7 +735,7 @@ Number* evalShunt(vector<char> expression, bool debug)
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
-                    Number* num3 = num1->multiply(num2);
+                    Number* num3 = num2->multiply(num1);
                     stack.push_back(num3);
                     i += 2;
                 }
@@ -878,7 +878,7 @@ void memoryMenu(vector<Number*> memory, int& ans)
 
 int main()
 {
-	vector<Number*> memory;
+	/*vector<Number*> memory;
 	int ans;
 
 	Number* n = new Basic(3);
@@ -888,21 +888,23 @@ int main()
 	memory.insert(memory.begin(), n);
 	memory.insert(memory.begin(), b);
 
-	memoryMenu(memory, ans);
+	memoryMenu(memory, ans);*/
 
 	//for testing
-	/*string in = "1 * ans";
-	vector<char> test;
-
 	try{
-		test = shunt(in, true);
+	string in = "2 + e";
+	vector<char> test;
+		test = shunt(in, false);
 		cout<<endl<<endl<<"Input:  "<<in<<endl;
 		cout<<"Final:  ";
-		printVectorChar(test);}
+		printVectorChar(test);
+		Number* answer = evalShunt(test, false);
+		answer->print();
+	}
 	catch(exception& e){
 		cout<<endl<<"ERROR: "<<e.what();}
 
-	cout << endl;*/
+	cout << endl;
 
 	//Number* num = evalShunt(test);
 	//num->print();

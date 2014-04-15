@@ -44,7 +44,7 @@ Number* getExp();
 //for exponent class
 Number* getBase();
 
-
+vector<Number*> getVect();
 
 };
 

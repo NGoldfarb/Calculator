@@ -250,6 +250,15 @@ Number* Fraction::getExp(){
 Number* Fraction::getBase(){
     return this;
 }
+vector<Number*> Fraction::getVect()
+{
+	vector<Number*> answer;
+	return answer;
+}
+Number* Fraction::simplifyHelper()
+{
+	return this;
+}
 
 
 

@@ -36,6 +36,9 @@ class Number{
         //for exponent class
         virtual Number* getBase() = 0;
 
+        virtual vector<Number*> getVect() = 0;
+        virtual Number* simplifyHelper() = 0;
+
         virtual ~Number()  //had to add a virtual destructor
         {
         }

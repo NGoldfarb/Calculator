@@ -305,5 +305,9 @@ vector<Number*> Basic::getVect()
 	vector<Number*> answer;
 	return answer;
 }
+Number* Basic::simplifyHelper()
+{
+	return this;
+}
 
 

@@ -51,6 +51,7 @@ class Basic : public Number{
         Number* getBase();
 
         vector<Number*> getVect();
+        Number* simplifyHelper();
 
 };
 

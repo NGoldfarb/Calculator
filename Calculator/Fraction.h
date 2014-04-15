@@ -41,6 +41,8 @@ class Fraction :public Number{
         Number* getCoef();
         Number* getExp();
 
+        vector<Number*> getVect();
+
         //for exponent class
         Number* getBase();
 

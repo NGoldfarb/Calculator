@@ -197,3 +197,8 @@ Irrational::~Irrational(){
 
 delete this;
 }
+vector<Number*> Irrational::getVect()
+{
+	vector<Number*> answer;
+	return answer;
+}
