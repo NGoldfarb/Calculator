@@ -50,6 +50,8 @@ class Basic : public Number{
         //for exponent class
         Number* getBase();
 
+        vector<Number*> getVect();
+
 };
 
 

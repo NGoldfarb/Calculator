@@ -1,4 +1,5 @@
 #include "Basic.h"
+#include <stdexcept>
 
 Basic::Basic(int n){
     value = n;
@@ -17,7 +18,7 @@ Number* Basic::add(Number* n){
     	delete this;
     	return x;
    	}
-    else   //currently only for n->getType() == "Fraction"
+    else if(n->getType() == "Fraction")
     {
     	Number* x = new Basic(n->getNum()->getValue() + value*n->getDen()->getValue());
     	Number* y = new Basic(n->getDen()->getValue());
@@ -25,6 +26,10 @@ Number* Basic::add(Number* n){
     	delete n;
     	delete this;
     	return z;
+    }
+    else
+    {
+    	throw invalid_argument("Currently, you may not add/subtract anything other than integers and fractions to integers.");
     }
 }
 
@@ -43,7 +48,7 @@ Number* Basic::multiply(Number* n){  //updated for when n is a fraction
     	delete this;
     	return x;
     }
-    else  //only works for fraction, used else because we need a return statement to compile
+    else if(n->getType() == "Fraction")
     {
     	Basic* x = new Basic(value*n->getNum()->getValue());
     	Basic* y = new Basic(n->getDen()->getValue());  //created another Basic that won't get destructed when n does;
@@ -53,9 +58,14 @@ Number* Basic::multiply(Number* n){  //updated for when n is a fraction
     	z->simplify();
     	return z;
     }
+    else
+    {
+    	throw invalid_argument("Currently, you may not multiply integers by anything other than fractions or integers.");
+    }
 }
 
-Number* Basic::divide(Number* n){   //only works for Basics and Fractions
+Number* Basic::divide(Number* n)
+{
     if(n->getType() == "Basic")
     {
     	if (value%n->getValue() == 0)
@@ -79,7 +89,10 @@ Number* Basic::divide(Number* n){   //only works for Basics and Fractions
         n->setDen(temp);
         return multiply(n);
     }
-    return n;  //need a return statement
+    else
+    {
+    	throw invalid_argument("Currently, you may not divide integers by anything other than integers or fractions.");
+    }
 }
 
 Number* Basic::expo(Number* n){  //needs further implentation if the parameter number is not a basic or is negative etc
@@ -286,6 +299,11 @@ Number* Basic::getExp(){
 
 Number* Basic::getBase(){
     return this;
+}
+vector<Number*> Basic::getVect()
+{
+	vector<Number*> answer;
+	return answer;
 }
 
 
