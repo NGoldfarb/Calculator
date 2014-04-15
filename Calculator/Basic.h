@@ -7,7 +7,7 @@
 #include "Fraction.h"
 #include <math.h>
 
-using namespace std;
+
 
 class Basic : public Number{
     public:

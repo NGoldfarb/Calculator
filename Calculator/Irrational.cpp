@@ -6,7 +6,7 @@ Irrational::Irrational(char c,Number* n, Number* n1){
 value = c;
 type = "irrational";
 
-b1 = new Basic(1);
+//b1 = new Basic(1);
 coef = n;
 exp = n1;
 }
