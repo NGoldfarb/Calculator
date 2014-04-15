@@ -1,10 +1,11 @@
 
- #ifndef NUMBER_H
+#ifndef NUMBER_H
 #define NUMBER_H
 
 #include <string>
 #include <iostream>
 #include <vector>
+
 
 
 using namespace std;
