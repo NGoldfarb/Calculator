@@ -70,6 +70,10 @@ Number* Basic::multiply(Number* n){  //updated for when n is a fraction
     	z->simplify();
     	return z;
     }
+    else if(n->getType() == "Irrational")
+    {
+    	return n->multiply(this);
+    }
     else
     {
     	throw invalid_argument("Currently, you may not multiply integers by anything other than fractions or integers.");
@@ -321,7 +325,8 @@ Number* Basic::getCoef(){
 }
 
 Number* Basic::getExp(){
-    return this;
+    Number* answer = new Basic(1);
+    return answer;
 }
 
 Number* Basic::getBase(){

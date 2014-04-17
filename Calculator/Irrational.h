@@ -5,12 +5,13 @@
 
 #include "Number.h"
 #include "Basic.h"
+#include "Expression.h"
 
 using namespace std;
 
 class Irrational:public Number{
 public:
-Basic* b1;
+Number* b1;
 string type;
 char value;
 Number* coef;

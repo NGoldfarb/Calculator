@@ -875,8 +875,8 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
         }
         if(debug)
         {
-        //printNumberStack(stack);
-        //cout << endl;
+        printNumberStack(stack);
+        cout << endl;
         }
     }
     //memory.insert(memory.begin(), stack[0]);

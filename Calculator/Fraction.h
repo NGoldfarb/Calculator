@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 #include "Number.h"
+#include "Irrational.h"
+#include "Basic.h"
 
 using namespace std;
 
