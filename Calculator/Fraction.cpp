@@ -1,5 +1,4 @@
 #include "Fraction.h"
-#include "Basic.h"
 #include <stdexcept>
 //#include <math.h>   //for sqrt
 //#include "Irrational.h"
@@ -87,12 +86,11 @@ Number* Fraction::multiply(Number* a){
         return f;
     }
 
-    if (a->getType() == "irrational"){
-        /*Basic* j = new Basic(numerator->getValue()*a->getCoef()->getValue());
-        Number* n = j;
-        Number* i = new Irrational(a->getCharValue(), n, a->getExp());
-        Number* k = new Fraction(i, denominator);
-        return k;*/
+    if (a->getType() == "Irrational"){   //still need to deal with deletes
+        Number* num = new Basic(numerator->getValue()*a->getCoef()->getValue());
+        Number* coef = new Fraction(num, denominator);
+        Number* answer = new Irrational(a->getCharValue(), coef, a->getExp());
+        return answer;
 
 
     }
@@ -236,7 +234,7 @@ void Fraction::print(){
 }
 
 int Fraction::getValue(){
-    return 1;
+    return 69;
 }
 void Fraction::setValue(int a)
 {

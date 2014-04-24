@@ -2,17 +2,20 @@
 
 
 
+
 Irrational::Irrational(char c,Number* n, Number* n1){
 value = c;
-type = "irrational";
+type = "Irrational";
 
-b1 = new Basic(1);
+b1 = new Basic(75847);
 coef = n;
 exp = n1;
 }
 
 Number* Irrational::add(Number* a){
-	if (value == a->getCharValue()&&exp == a->getExp()){
+	if(a->getType() == type && value == a->getCharValue())
+	{
+	if (value == a->getCharValue()&&exp->getValue() == a->getExp()->getValue()){
 		if (coef->getType() == "Basic"&& a->getCoef()->getType() == "Basic"){
                      int aCoef =a->getCoef()->getValue();
                      int newCoef =getCoef()->getValue()+ aCoef;
@@ -35,13 +38,22 @@ return b2;
 		}
 
 	}
+	}
+	else
+	{
+		vector<Number*> vec;
+		vec.push_back(this);
+		vec.push_back(a);
+		Number* answer = new Expression(vec);
+		return answer;
+	}
 	return b1;
 }
 
 
 
 Number* Irrational::subtract(Number* a){	
-if (value == a->getCharValue() && exp == a->getExp()){
+if (value == a->getCharValue() && exp->getValue() == a->getExp()->getValue()){
 		if (coef->getType() == "Basic"&&a->getCoef()->getType() == "Basic"){
                      int aCoef =a->getCoef()->getValue();
                      int newCoef=getCoef()->getValue()-aCoef;
@@ -69,32 +81,41 @@ return b2;
 	return b1;
 }
 Number* Irrational::multiply(Number* a){
-
-	if (a->getCoef()->getType() == "Basic"&&getCoef()->getType()=="Basic"){
-
-             int aCoef =a->getCoef()->getValue();
-             int newCoef= getCoef()->getValue() * aCoef;
-		Number* n = new Basic(newCoef);
-              int newExp = getExp()->getValue() + a->getExp()->getValue();
-		Number* e = new Basic(newExp);
-             Number* x = new Irrational(value, n, e);
+	if(a->getType() == "Irrational")
+	{
+		if(a->getCharValue() == value)
+		{
+			if (a->getCoef()->getType() == "Basic"&&getCoef()->getType()=="Basic"){
+				int aCoef =a->getCoef()->getValue();
+				int newCoef= getCoef()->getValue() * aCoef;
+				Number* n = new Basic(newCoef);
+				int newExp = getExp()->getValue() + a->getExp()->getValue();
+				Number* e = new Basic(newExp);
+				Number* x = new Irrational(value, n, e);
               
-		return x;
+				return x;
+			}
+		}
+	}
+	else if(a->getType() == "Fraction")
+	{
+		return a->multiply(this);
+	}
+	else
+	{
+		Number* newCoef = coef->multiply(a);
+		Number* answer = new Irrational(value, newCoef, exp);   //add deletes somewhere
+		return answer;
 	}
 	return b1;
 }
 
 Number* Irrational::divide(Number* a){
-cout<<"hey";
 	if (a->getCoef()->getType() == "Basic"&&getCoef()->getType()=="Basic"){
-cout<<"yes";
-	      int aCoef =a->getCoef()->getValue();
-             int newCoef=getCoef()->getValue();
-             Number*a= new Basic(aCoef);
-             Number*b= new Basic(newCoef);
-              Number* e= new Fraction(b,a);
- e->simplify();
-return e ;
+	      Number* aCoef = a->getCoef();
+          Number* newCoef = getCoef()->divide(aCoef);
+          Number* answer = new Irrational(value, newCoef, exp);
+return answer;
 }
 
 	return b1;
