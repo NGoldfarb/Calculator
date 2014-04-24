@@ -1,6 +1,5 @@
-/*
- * main.cpp
- *
+
+ /*
  *  Created on: Apr 6, 2014
  *      Author: Nikita
  */
@@ -207,7 +206,7 @@ vector<char> shunt(string expression, bool debug)
 		{
 
 			//Check for spaces before and after an operator
-			if((input[i-1] != ' '||input[i+1] != ' ')&&!neg&&!nrt&&!sqrt&&!log)
+			if((input[i-1] != ' '||input[i+1] != ' ')&&!neg&&!nrt&&!sqrt)
 			{
 				throw invalid_argument("You need a space infront and behind an operator!");
 			}
@@ -556,8 +555,7 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
         }
         else if (expression[i] == 'a')
         {
-        	Number* a = memory.back();
-        	memory.pop_back();
+        	Number* a = memory[ans];
         	stack.push_back(a);
         	i += 2;
         }
@@ -778,8 +776,7 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
         cout << endl;
         }
     }
-    //memory.insert(memory.begin(), stack[0]);
-    memory.push_back(stack[0]);
+    memory.insert(memory.begin(), stack[0]);
     return stack[0];
 }
 
@@ -941,20 +938,8 @@ void memoryMenu(vector<Number*> memory, int& ans)
 int main()
 {
 	vector<Number*> memory;
-	int ans = 0;
+	int ans;
 
-	cout << endl;
-	try{
-		string in = "pi + pi";
-		vector<char> test = shunt(in, false);
-		Number* num = evalShunt(test, false, memory, ans);
-		num->print();
-		cout << endl;
-	}
-		catch(exception& e)
-		{
-
-		}
 
 	//Menu
 	bool debug  = false;
