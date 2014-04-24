@@ -484,108 +484,7 @@ vector<char> shunt(string expression, bool debug)
 }
 
 
-void help()
-{
-	string selection;
-	while(true)
-	{
-	cout<<endl<<"What do you need help with?";
-	cout<<endl<<"1. Operators"
-		<<endl<<"2. Square root"
-		<<endl<<"3. N root"
-		<<endl<<"4. Logarithms"
-		<<endl<<"5. Examples"
-		<<endl<<"0. Quit";
 
-	cout<<endl<<endl<<"Input your selection: ";
-
-	getline(cin, selection);
-
-	while(selection.size() > 1)
-	{
-		cout<<endl<<"That is not a valid selection!"<<endl;
-		cout<<endl<<"What do you need help with?";
-		cout<<endl<<"1. Operators"
-			<<endl<<"2. Square root"
-			<<endl<<"3. N root"
-			<<endl<<"4. Logarithms"
-			<<endl<<"5. Examples"
-			<<endl<<"0. Quit";
-
-		cout<<endl<<endl<<"Input your selection: ";
-		getline(cin, selection);
-	}
-
-	switch(selection[0])
-	{
-	case '1': cout<<"When using operators, such as + - * / ^ make sure to put a space between the operator"
-			" and the numbers being operated on, parentheses do not need spaces."
-			<<endl<<"Example: 1 + 2 or (4 / 2)"<<endl;	break;
-
-	case '2': cout<<"To take the square root of a number input sqrt:n where n is the number you"
-			" want to take the square root of."<<endl<<"Example: sqrt:4"<<endl;	break;
-
-	case '3': cout<<"To take the N root of a number input nrt:a where n is the root and a is the number"
-			" you are taking the root of."<<endl<<"Example: 2rt:4 or 3rt:9"<<endl;	break;
-
-	case '4': cout<<"To find the logarithm of a number input log_b:n where b is the base and n is the number"
-			" you are taking the logarithm of."<<endl<<"Example: log_2:4"<<endl;	break;
-
-	case '5': cout<<"Here are some example inputs for this calculator:"<<endl<<"(1 + 2) / 3"<<endl<<"sqrt:4 + log_2:4"
-			<<endl<<"2 ^ (10 / 2) * 4rt:16"<<endl;	break;
-
-	case '0': cout<<"Have fun!"<<endl; return;
-
-	default : cout<<"That is not a valid selection!"<<endl; break;
-	}
-	}
-
-}
-
-void mode(bool &debug)
-{
-	string selection;
-	while(true)
-	{
-		cout<<"Available modes:"
-			<<endl<<"1. Debug"
-			<<endl<<"0. Quit"<<endl;
-		cout<<endl<<"Input your selection: ";
-
-		getline(cin, selection);
-
-		while(selection.size() > 1)
-		{
-			cout<<endl<<"That is not a valid selection!"<<endl<<endl;
-			cout<<"Available modes:"
-						<<endl<<"1. Debug"
-						<<endl<<"0. Quit"<<endl;
-					cout<<endl<<"Input your selection: ";
-			getline(cin, selection);
-		}
-
-		switch(selection[0])
-		{
-		case '1': if(debug == true)
-				  {
-					  debug = false;
-					  cout<<endl<<"Debug mode has been turned off."<<endl;;
-				  }
-				  else
-				  {
-					  debug = true;
-					  cout<<endl<<"Debug mode has been turned on."<<endl;;
-				  }
-					break;
-
-		case '0': cout<<endl<<"Have fun!"<<endl<<endl;
-		 return;
-
-		default : cout<<endl<<"That is not a valid selection!"<<endl; break;
-		}
-
-	}
-}
 
 void printNumberStack(vector<Number*> stack)
 {
@@ -882,8 +781,116 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
     return stack[0];
 }
 
+void help()
+{
+	string selection;
+	while(true)
+	{
+	cout<<endl<<"What do you need help with?";
+	cout<<endl<<"1. Operators"
+		<<endl<<"2. Square root"
+		<<endl<<"3. N root"
+		<<endl<<"4. Logarithms"
+		<<endl<<"5. Examples"
+		<<endl<<"0. Quit";
+
+	cout<<endl<<endl<<"Input your selection: ";
+
+	getline(cin, selection);
+
+	while(selection.size() > 1)
+	{
+		cout<<endl<<"That is not a valid selection!"<<endl;
+		cout<<endl<<"What do you need help with?";
+		cout<<endl<<"1. Operators"
+			<<endl<<"2. Square root"
+			<<endl<<"3. N root"
+			<<endl<<"4. Logarithms"
+			<<endl<<"5. Examples"
+			<<endl<<"0. Quit";
+
+		cout<<endl<<endl<<"Input your selection: ";
+		getline(cin, selection);
+	}
+
+	switch(selection[0])
+	{
+	case '1': cout<<"When using operators, such as + - * / ^ make sure to put a space between the operator"
+			" and the numbers being operated on, parentheses do not need spaces."
+			<<endl<<"Example: 1 + 2 or (4 / 2)"<<endl;	break;
+
+	case '2': cout<<"To take the square root of a number input sqrt:n where n is the number you"
+			" want to take the square root of."<<endl<<"Example: sqrt:4"<<endl;	break;
+
+	case '3': cout<<"To take the N root of a number input nrt:a where n is the root and a is the number"
+			" you are taking the root of."<<endl<<"Example: 2rt:4 or 3rt:9"<<endl;	break;
+
+	case '4': cout<<"To find the logarithm of a number input log_b:n where b is the base and n is the number"
+			" you are taking the logarithm of."<<endl<<"Example: log_2:4"<<endl;	break;
+
+	case '5': cout<<"Here are some example inputs for this calculator:"<<endl<<"(1 + 2) / 3"<<endl<<"sqrt:4 + log_2:4"
+			<<endl<<"2 ^ (10 / 2) * 4rt:16"<<endl;	break;
+
+	case '0': cout<<"Have fun!"<<endl; return;
+
+	default : cout<<"That is not a valid selection!"<<endl; break;
+	}
+	}
+
+}
+
+void mode(bool &debug)
+{
+	string selection;
+	while(true)
+	{
+		cout<<"Available modes:"
+			<<endl<<"1. Debug"
+			<<endl<<"0. Quit"<<endl;
+		cout<<endl<<"Input your selection: ";
+
+		getline(cin, selection);
+
+		while(selection.size() > 1)
+		{
+			cout<<endl<<"That is not a valid selection!"<<endl<<endl;
+			cout<<"Available modes:"
+						<<endl<<"1. Debug"
+						<<endl<<"0. Quit"<<endl;
+					cout<<endl<<"Input your selection: ";
+			getline(cin, selection);
+		}
+
+		switch(selection[0])
+		{
+		case '1': if(debug == true)
+				  {
+					  debug = false;
+					  cout<<endl<<"Debug mode has been turned off."<<endl;;
+				  }
+				  else
+				  {
+					  debug = true;
+					  cout<<endl<<"Debug mode has been turned on."<<endl;;
+				  }
+					break;
+
+		case '0': cout<<endl<<"Have fun!"<<endl<<endl;
+		 return;
+
+		default : cout<<endl<<"That is not a valid selection!"<<endl; break;
+		}
+
+	}
+}
+
 void memoryMenu(vector<Number*> memory, int& ans)
 {
+	//When used in evalShunt the number in the vector is copied to a number to be used in the evaluator
+	//During evaluation the number is deleted, but this deletes the pointer and thus deletes the number
+	//in the vector.  If you uncomment this method in the menu you can look at past results as long as
+	//ans is not used as input.
+
 	if(memory.size() < 1)
 	{
 		cout<<endl<<"You don't have any past results!"<<endl<<endl;
@@ -938,14 +945,15 @@ int main()
 	//Menu
 	bool debug  = false;
 
-
+	cout<<"DISCLAIMER: Irrationals add, subtract, divide, multiply if the numbers are constructed by hand,"
+			<<endl<<"\t    they do not work within the menu.  Logs and roots work if the result is an integer."<<endl<<endl;
 	cout<<"If this is your first time using this calculator please check out \"Help\""<<endl;
 	while(true)
 	{
 		string in;
 
 		vector<char> test;
-		char selection;
+		string selection;
 
 		cout<<endl<<"What do you want to do?";
 		cout<<endl<<"1. Input your expression"<<
@@ -955,10 +963,22 @@ int main()
 		endl<<"0. Quit"<<
 		endl<<endl<<"Input your selection: ";
 
-		cin >> selection;
-		cin.ignore();
+		getline(cin, selection);
 
-		switch(selection)
+		while(selection.size() > 1)
+		{
+			cout<<endl<<"That is not a valid selection!"<<endl;
+			cout<<endl<<"What do you want to do?";
+			cout<<endl<<"1. Input your expression"<<
+			endl<<"2. Past results and set ANS"<<
+			endl<<"3. Help"<<
+			endl<<"4. Change modes"<<
+			endl<<"0. Quit"<<
+			endl<<endl<<"Input your selection: ";
+			getline(cin, selection);
+		}
+
+		switch(selection[0])
 		{
 		case '1': cout<<"Input your expression: ";
 						getline(cin, in);
@@ -978,7 +998,8 @@ int main()
 								cout<<endl<<"ERROR: "<<e.what()<<endl;}
 						break;
 
-		case '2': memoryMenu(memory, ans); break;
+		case '2': cout<<endl<<"Under construction, you can still use ans to use the most recent output."<<endl;
+				  cout<<"Look at our main class for planned implimentation."<<endl; break;//memoryMenu(memory, ans); break;
 
 		case '3': help(); break;
 
