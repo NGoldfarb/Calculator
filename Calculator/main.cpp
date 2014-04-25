@@ -22,7 +22,7 @@ void printVectorChar(vector<char> toPrint)
 }
 
 
-vector<char> shunt(string expression, bool debug)
+vector<char> shunt(string expression, bool debug, vector<string>& memory, int ans)
 {
 	//Algorithm on http://en.wikipedia.org/wiki/Shunting-yard_algorithm used for reference
 
@@ -32,6 +32,8 @@ vector<char> shunt(string expression, bool debug)
 	int j = 0;
 
 	stack.push_back(' '); //initialize stack, otherwise program crash if the expression does not start with '('
+
+
 
 	//Precedence of operations
 	int precedenceIn = 0;
@@ -45,10 +47,40 @@ vector<char> shunt(string expression, bool debug)
 
 	int stringSize = expression.size();
 
+	//check for ans and replace
+	for(int i = 0; i < stringSize; i++)
+	{
+		if (expression[i] == 'a')
+		{
+			if(expression[i+1] == 'n'&&expression[i+2] == 's')
+			{
+				if(memory.size() < 1)
+					throw invalid_argument("You don't have any past results to use ans!");
+				cout<<"test"<<endl;
+				cout<<expression<<endl;
+				expression.erase(i, 3);
+				cout<<expression<<endl;
+				expression.insert(i, memory[ans]);
+				cout<<expression<<endl;
+				break;
+			}
+			else
+				throw invalid_argument("You did not input ans correctly!");
+		}
+	}
+
 	//Turn string input into vector
+	stringSize = expression.size();
 	for(int i = 0; i < stringSize; i++)
 	{
 		input.push_back(expression[i]);
+	}
+
+	if(debug)
+	{
+		cout<<"Input: ";
+		printVectorChar(input);
+		cout<<endl;
 	}
 
 	for(int i = 0; (unsigned int)i < input.size(); i++)
@@ -478,6 +510,10 @@ vector<char> shunt(string expression, bool debug)
 		}
 	}
 
+	expression.insert(0,"("); //Add ( and ) to the ends of the expression
+	expression.push_back(')');
+	memory.insert(memory.begin(), expression); //store the expression in memory vector to be used later by ans
+											   //Will be deleted if it is not computed in the evaluator
 
 	return output;
 }
@@ -495,7 +531,7 @@ void printNumberStack(vector<Number*> stack)
 	}
 }
 
-Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, int ans)
+Number* evalShunt(vector<char> expression, bool debug, vector<string>& memory)
 {
     vector<Number*> stack;
     int i = 0;
@@ -553,18 +589,6 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
             stack.push_back(pi);
             i += 3;
         }
-        else if (expression[i] == 'a')
-        {
-        	Number* a = memory[ans];
-        	stack.push_back(a);
-        	i += 2;
-        }
-        /*else if (expression[i] == 'a')  //works for last answer  //put in exception for when ans is unavailable
-        {
-        	Number* prevAns = memory->back();
-        	stack.push_back(prevAns);
-        	i += 2;
-        }*/
         else if (expression[i] == ' ') //next token is space, might need to break, subtract, or just increment i
         {
             if(expression[i+1] == ' ')
@@ -776,7 +800,7 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
         cout << endl;
         }
     }
-    memory.insert(memory.begin(), stack[0]);
+
     return stack[0];
 }
 
@@ -883,7 +907,7 @@ void mode(bool &debug)
 	}
 }
 
-void memoryMenu(vector<Number*> memory, int& ans)
+void memoryMenu(vector<string> memory, int& ans)
 {
 	//When used in evalShunt the number in the vector is copied to a number to be used in the evaluator
 	//During evaluation the number is deleted, but this deletes the pointer and thus deletes the number
@@ -901,7 +925,10 @@ void memoryMenu(vector<Number*> memory, int& ans)
 	for(int i = 0; (unsigned int)i < memory.size(); i++)
 	{
 		cout<<i<<". ";
-		memory[i]->print();
+		vector<string> dummy; //so that evaluating the strings in memory dont modify memory
+		vector<char> s = shunt(memory[i], false, dummy, ans);
+		Number* num = evalShunt(s, false, dummy);
+		num->print();
 		cout<<endl;
 	}
 
@@ -937,9 +964,23 @@ void memoryMenu(vector<Number*> memory, int& ans)
 
 int main()
 {
-	vector<Number*> memory;
-	int ans;
+	vector<string> memory;
+	int ans = 0;
 
+	/*string expression = "1 + 3 + ans";
+	memory.insert(memory.begin(), "(1 + 2)");
+
+	int stringSize = expression.size();
+
+	for(int i = 0; i < stringSize; i++)
+	{
+		if (expression[i] == 'a')
+		{
+			expression.erase(i, 3);
+			expression.insert(i, memory[ans]);
+		}
+	}
+	cout<<expression;*/
 
 	//Menu
 	bool debug  = false;
@@ -982,7 +1023,7 @@ int main()
 		case '1': cout<<"Input your expression: ";
 						getline(cin, in);
 						try{
-								test = shunt(in, debug);
+								test = shunt(in, debug, memory, ans);
 								if(debug)
 								{
 								cout<<endl<<endl<<"Input:  "<<in<<endl;
@@ -990,15 +1031,16 @@ int main()
 								printVectorChar(test);
 								}
 								cout<<endl;
-								Number* num = evalShunt(test, debug, memory, ans);
+								Number* num = evalShunt(test, debug, memory);
 								cout<<"Result: ";
 								num->print();}
 						catch(exception& e){
 								cout<<endl<<"ERROR: "<<e.what()<<endl;}
 						break;
 
-		case '2': cout<<endl<<"Under construction, you can still use ans to use the most recent output."<<endl;
-				  cout<<"Look at our main class for planned implimentation."<<endl; break;//memoryMenu(memory, ans); break;
+		case '2': /*cout<<endl<<"Under construction, you can still use ans to use the most recent output."<<endl;
+				  cout<<"Look at our main class for planned implimentation."<<endl; break;*/
+				  memoryMenu(memory, ans); break;
 
 		case '3': help(); break;
 
