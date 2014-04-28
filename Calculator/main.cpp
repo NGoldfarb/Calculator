@@ -6,6 +6,7 @@
  */
 #include <iostream>
 #include <vector>
+#include <list>
 #include <string>
 #include "Number.h"
 #include "Basic.h"
@@ -22,6 +23,93 @@ void printVectorChar(vector<char> toPrint)
 	}
 }
 
+void shuntHelp(string& expression)
+{
+	unsigned int i = 0;
+	while(i < expression.size() - 1)    // maybe add something for '(' and ')' too
+	{
+		if(expression[i] == ' ')
+		{
+			if((expression[i+1]) == ' ' || i == 0)
+			{
+				expression.erase(i, 1);  //i is now position of next character
+			}
+			else
+			{
+				i++;
+			}
+		}
+		else if(expression[i] == '(' || expression[i] == ')')
+		{
+			i++;
+		}
+			//below, "hopefully" means I think Nikita checked for appropriate errors in shunt
+		else if(expression[i] == 's') //sqrt: hopefully
+		{
+			i += 5;
+		}
+		else if(expression[i] == 'a')  //ans hopefully
+		{
+			i += 3;
+		}
+		else if(expression[i] == 'l')  //log_ hopefully
+		{
+			i += 4;
+			while((expression[i] >= '0' && expression[i] <= '9') || expression[i] == 'e' || expression[i] == 'p' || expression[i] == 'i')  //for base of log
+			{
+				i++;
+			}
+			i++;    //for ':' in log
+		}
+		else if(expression[i] == 'e')  //e hopefully
+		{
+			i++;
+		}
+		else if(expression[i] == 'p')   //pi hopefully
+		{
+			i += 2;
+		}
+		else if(expression[i] >= '0' && expression[i] <= '9')
+		{
+			while(expression[i] >= '0' && expression[i] <= '9')
+			{
+				i++;
+			}
+			if(expression[i] != ' ' && expression[i] != ')' && expression[i] != 'r')
+			{
+				expression.insert(i, 1, ' ');
+				i++;
+			}
+			else if(expression[i] == 'r')   //nth root hopefully
+			{
+				i += 3;
+			}
+			if(expression[i] == '(' || expression[i] == 's' || expression[i] == 'l' || expression[i] == 'a' || expression[i] == 'e' || expression[i] == 'p')  //allows for things like 4pi
+			{
+				expression.insert(i, 1, '*');
+				i++;
+				expression.insert(i, 1, ' ');
+				i++;
+			}
+		}
+		else if(expression[i] == '-' && (i == 0 || ((expression[i-1] == '(' || expression[i-1] == ' ') && !(expression[i-2] >= '0' && expression[i-2] <= '9'))))  //negative number
+		{
+			i++;
+		}
+		else if(expression[i] == '+' || expression[i] ==  '-' || expression[i] == '*' || expression[i] == '/' || expression[i] == '^')
+		{
+			if(expression[i+1] != ' ')
+			{
+				expression.insert(i+1, 1, ' ');
+			}
+			i++;
+		}
+		else
+		{
+			throw invalid_argument("Your input contains unrecognized characters.");
+		}
+	}
+}
 
 vector<char> shunt(string expression, bool debug)
 {
@@ -678,7 +766,7 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
             {
             	if (stack.size() < 2)  //make sure there is enough on the stack
             	{
-            		throw invalid_argument("The subtraction does not have 2 operands.");
+            		throw invalid_argument("The subtraction does not have 2 operands. error 1");
             	}
             	else
             	{
@@ -737,26 +825,29 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
 
             		    stack.push_back(num2);
             		    i += 5;
-            		                }
+            		}
             	}
             	else
             	{
             		i++;
-            	}/*
-                if (stack.size() < 2)  //make sure there is enough on the stack
-                {
-                    throw invalid_argument("The subtraction does not have 2 operands.");
-                }
-                else
-                {
-                    Number* num1 = stack.back();
-                    stack.pop_back();
-                    Number* num2 = stack.back();
-                    stack.pop_back();
-                    Number* num3 = num2->subtract(num1);
-                    stack.push_back(num3);
-                    i += 2;
-                }*/
+            	}
+            	/*if(expression[i] == ' ')   //COMMENTED SINCE SUBTRACTION SHOULD BE TAKEN CARE OF ABOVE
+            	{
+            		if (stack.size() < 2)  //make sure there is enough on the stack
+                	{
+                    	throw invalid_argument("The subtraction does not have 2 operands. error2");
+                	}
+                	else
+                	{
+                    	Number* num1 = stack.back();
+                    	stack.pop_back();
+                    	Number* num2 = stack.back();
+                    	stack.pop_back();
+                    	Number* num3 = num2->subtract(num1);
+                    	stack.push_back(num3);
+                    	i += 2;
+                	}
+            	}*/
             }
             else if (expression[i] == '*')  //perform multiplication on top two Numbers on stack
             {
@@ -821,7 +912,7 @@ Number* evalShunt(vector<char> expression, bool debug, vector<Number*>& memory, 
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
-                    Number* num3 = num2->log(num1);  //assuming for base.log(argument) CHANGE EXP TO LOG
+                    Number* num3 = num2->log(num1);  //assuming for base.log(argument)
                     stack.push_back(num3);
                     i += 3;  //based on log_x:y being x y lb
                 }
@@ -938,15 +1029,18 @@ int main()
 
 	cout << endl;
 	try{
-		string in = "pi + pi";
-		vector<char> test = shunt(in, false);
-		Number* num = evalShunt(test, false, memory, ans);
-		num->print();
+		string shuntInput = " -1 * 2";
+		shuntHelp(shuntInput);
+		vector<char> expression = shunt(shuntInput, false);
+		printVectorChar(expression);
+		vector<Number*> memory;
+		Number* answer = evalShunt(expression, false, memory, 0);
+		answer->print();
 		cout << endl;
 	}
 		catch(exception& e)
 		{
-
+			cout << e.what() << " EXCEPTION! " << endl;
 		}
 
 	//Menu
