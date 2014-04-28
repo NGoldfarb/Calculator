@@ -11,6 +11,7 @@
 #include "Basic.h"
 #include "Fraction.h"
 #include "Irrational.h"
+#include "Log.h"
 #include <stdexcept>
 using namespace std;
 
@@ -849,11 +850,12 @@ Number* evalShunt(vector<char> expression, bool debug, vector<string>& memory)
                 }
                 else
                 {
+                	Number* b1 = new Basic(1);
                     Number* num1 = stack.back();
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
-                    Number* num3 = num2->log(num1);  //assuming for base.log(argument)
+                    Number* num3 = new Log(b1, num2, num1);  //assuming for base.log(argument) CHANGE EXP TO LOG
                     stack.push_back(num3);
                     i += 3;  //based on log_x:y being x y lb
                 }
@@ -909,8 +911,8 @@ Number* evalShunt(vector<char> expression, bool debug, vector<string>& memory)
         }
         if(debug)
         {
-        //printNumberStack(stack);
-        //cout << endl;
+        printNumberStack(stack);
+        cout << endl;
         }
     }
 
@@ -1176,8 +1178,18 @@ int main()
 
 		switch(selection[0])
 		{
-		case '1': cout<<"Input your expression: ";
+		case '1':	cout<<endl<<"Enter \"quit\" when you want to exit!"<<endl;
+				while(true)
+					{
+						cout<<"Input your expression: ";
 						getline(cin, in);
+						if(in == "quit"||in == "Quit")
+						{
+							cout<<endl;
+							break;
+						}
+						else
+						{
 						try{
 								test = shunt(in, debug, memory, ans);
 								if(debug)
@@ -1193,6 +1205,8 @@ int main()
 								cout<<endl<<endl;}
 						catch(exception& e){
 								cout<<endl<<"ERROR: "<<e.what()<<endl;}
+						}
+					}
 						break;
 
 		case '2': /*cout<<endl<<"Under construction, you can still use ans to use the most recent output."<<endl;

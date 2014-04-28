@@ -29,7 +29,7 @@ Number* Basic::add(Number* n){
     	delete this;
     	return z;
     }
-    else if(n->getType() == "irrational")
+    else if(n->getType() == "Irrational")
     {
     	Basic* duplicate = new Basic(value);
     	vector<Number*> exp;
@@ -41,15 +41,43 @@ Number* Basic::add(Number* n){
     }
     else
     {
-    	throw invalid_argument("Currently, you may not add/subtract anything other than integers and fractions to integers.");
+    	throw invalid_argument("Error in basic::add");
     }
 }
 
 Number* Basic::subtract(Number* n){
-    Basic* x = new Basic(value - n->getValue());
-    delete n;
-    delete this;
-    return x;
+    if(n->getType() == "Basic")
+    {
+    	Basic* x = new Basic(value - n->getValue());
+    	delete n;
+    	delete this;
+    	return x;
+   	}
+    else if(n->getType() == "Fraction")
+    {
+    	Number* x = new Basic(value*n->getDen()->getValue() - n->getNum()->getValue());
+    	Number* y = new Basic(n->getDen()->getValue());
+    	Number* z = new Fraction(x, y);
+    	delete n;
+    	delete this;
+    	return z;
+    }
+    else if(n->getType() == "Irrational")
+    {
+    	Basic* duplicate = new Basic(value);
+    	vector<Number*> exp;
+    	exp.push_back(duplicate);
+    	Number* neg = new Basic(-1);
+    	n = n->multiply(neg);
+    	exp.push_back(n);
+    	Number* answer = new Expression(exp);
+    	delete this;
+    	return answer;
+    }
+    else
+    {
+    	throw invalid_argument("Error in basic::subtract");
+    }
 }
 
 Number* Basic::multiply(Number* n){  //updated for when n is a fraction
