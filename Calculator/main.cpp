@@ -855,6 +855,7 @@ Number* evalShunt(vector<char> expression, bool debug, vector<string>& memory)
                     stack.pop_back();
                     Number* num2 = stack.back();
                     stack.pop_back();
+                    //Number* num3 = num2->log(num1);
                     Number* num3 = new Log(b1, num2, num1);  //assuming for base.log(argument) CHANGE EXP TO LOG
                     stack.push_back(num3);
                     i += 3;  //based on log_x:y being x y lb
@@ -1100,7 +1101,7 @@ int main()
 	int ans = 0;
 
 	try{
-		string shuntInput = " -1 * 2";
+		string shuntInput = "";
 		shuntHelp(shuntInput);
 		vector<char> expression = shunt(shuntInput, false, memory, 0);
 		printVectorChar(expression);
@@ -1191,6 +1192,7 @@ int main()
 						else
 						{
 						try{
+								//shuntHelp(in);
 								test = shunt(in, debug, memory, ans);
 								if(debug)
 								{

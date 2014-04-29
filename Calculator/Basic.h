@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Number.h"
 #include "Fraction.h"
+#include "Exponent.h"
 #include <math.h>
 
 

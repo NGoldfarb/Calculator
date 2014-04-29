@@ -102,6 +102,10 @@ Number* Basic::multiply(Number* n){  //updated for when n is a fraction
     {
     	return n->multiply(this);
     }
+    else if(n->getType() == "exponent")
+    {
+    	return n->multiply(this);
+    }
     else
     {
     	throw invalid_argument("Currently, you may not multiply integers by anything other than fractions or integers.");
@@ -175,7 +179,15 @@ Number* Basic::expo(Number* n){  //needs further implentation if the parameter n
     	}
     	else
     	{
+    		if(value < 0 && n->getDen()->getValue() % 2 == 0)
+    		{
+    			throw invalid_argument("You cannot take even roots of negative numbers!");
+    		}
     		int baseInt = value;
+    		if(value < 0)   //for negative arguments
+    		{
+    			baseInt *= -1;
+    		}
     		int root = n->getDen()->getValue();
     		vector<int> primeFactors;
     		factor(baseInt, primeFactors);
@@ -198,6 +210,10 @@ Number* Basic::expo(Number* n){  //needs further implentation if the parameter n
     		{
     			outProduct *= outFactors[i];
     		}
+    		if(value < 0)  //for negative arguments
+    		{
+    			outProduct *= -1;
+    		}
     		for(unsigned int i = 0; i < inFactors.size(); i++)
     		{
     			inProduct *= inFactors[i];
@@ -211,7 +227,7 @@ Number* Basic::expo(Number* n){  //needs further implentation if the parameter n
     		}
     		else
     		{
-    			Number* in = new Basic(outProduct);
+     			Number* in = new Basic(inProduct);
     			Number* answer = new Exponent(out, in, n);  //need exponent
     			return answer;
 

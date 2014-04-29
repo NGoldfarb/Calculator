@@ -38,8 +38,64 @@ Number* Exponent::subtract(Number* a){
 	return this;
 }
 
-Number* Exponent::multiply(Number* a){
-	if (type == a->getType() && getBase() == a->getBase())
+Number* Exponent::multiply(Number* a){   //only work for exponents with basic/fraction bases and basic/fraction exponents
+	if(a->getType() == "Basic"  || a->getType() == "Fraction")
+	{
+		Number* newCoef = coef->multiply(a);
+		Number* answer = new Exponent(newCoef, base, exp);
+		return answer;
+	}
+	//works if a is an exponent
+	if(base->getType() == a->getBase()->getType())
+	{
+		if(base->getType() == "Basic")
+		{
+			if(base->getValue() == a->getBase()->getValue())
+			{
+				Number* newExp = exp->add(a->getExp());
+				Number* newCoef = coef->multiply(a->getCoef());
+				Number* answer = new Exponent(newCoef, base, newExp);
+				return answer->simplifyHelper();
+			}
+		}
+		else  //base->getType() == "Fraction"
+		{
+			if(base->getNum()->getValue() == a->getBase()->getNum()->getValue() && base->getDen()->getValue() == a->getBase()->getDen()->getValue())
+			{
+				Number* newExp = exp->add(a->getExp());
+				Number* newCoef = coef->multiply(a->getCoef());
+				Number* answer = new Exponent(newCoef, base, newExp);
+				return answer->simplifyHelper();
+			}
+		}
+	}
+	if(exp->getType() == a->getExp()->getType())
+	{
+		if(exp->getType() == "Basic")
+		{
+			if(exp->getValue() == a->getExp()->getValue())
+			{
+				Number* newBase = base->multiply(a->getBase());
+				Number* newCoef = coef->multiply(a->getCoef());
+				Number* answer = new Exponent(newCoef, newBase, exp);
+				return answer->simplifyHelper();
+			}
+		}
+		else //exp->getType() == "Fraction"
+		{
+			if(exp->getNum()->getValue() == a->getExp()->getNum()->getValue() && exp->getDen()->getValue() == a->getExp()->getDen()->getValue())
+			{
+				Number* newBase = base->multiply(a->getBase());
+				Number* newCoef = coef->multiply(a->getCoef());
+				Number* answer = new Exponent(newCoef, newBase, exp);
+				return answer->simplifyHelper();
+			}
+		}
+	}
+	Number* newCoef = a->multiply(coef);
+	Number* answer = new Exponent(newCoef, base, exp);
+	return answer;
+	/*if (type == a->getType() && getBase() == a->getBase())
 	{
 		Number* x = coef->multiply(a->getCoef());
 		Number* y = exp->add(a->getExp());
@@ -47,10 +103,10 @@ Number* Exponent::multiply(Number* a){
 		return z;
 
 	}
-	if (a->getType() == "basic" && base->getValue() == a->getValue()){
+	if (a->getType() == "Basic" && base->getValue() == a->getValue()){
 		//	Number* x = new Exponent(coef, base, exp->getValue()+1)
 	}
-	return this;
+	return this;*/
 }
 
 Number* Exponent::divide(Number* a){
@@ -73,7 +129,8 @@ Number* Exponent::expo(Number* a){
 }
 
 int Exponent::getValue(){
-	return simplifyHelper()->getCoef()->getValue();
+	//return simplifyHelper()->getCoef()->getValue();
+	return 156;
 }
 
 char Exponent::getCharValue(){
@@ -81,7 +138,7 @@ char Exponent::getCharValue(){
 }
 
 Number* Exponent::simplifyHelper(){
-	if (base->getType() == "basic"&&exp->getType() == "basic")
+	/*if (base->getType() == "basic"&&exp->getType() == "basic")
 	{
 		if (exp->getValue() <= -1)
 		{
@@ -113,7 +170,7 @@ Number* Exponent::simplifyHelper(){
 			return c;
 		}
 
-	}
+	}*/
 
 	/*if (base->getType() == "basic" && exp->getType() == "basic")
 	{
@@ -133,11 +190,13 @@ Number* Exponent::simplifyHelper(){
 
 	}
 	*/
-	return this;
-}
+		Number* newNum = base->expo(exp);
+		Number* newNum2 = newNum->multiply(coef);
+		return newNum2;
+	}
 
 Number* Exponent::simplify(Number*, int){
-	if (getExp()->getValue() < 0)
+	/*if (getExp()->getValue() < 0)
 	{
 		int i = getExp()->getValue();
 		while (i != 1){
@@ -159,7 +218,15 @@ Number* Exponent::simplify(Number*, int){
 	}
 	Number* z = exp->subtract(exp + 1);
 	Number* y = new Exponent(coef, base, z);
-	return y;
+	return y;*/
+
+	if(base->getType() == "Basic" && exp->getType() == "Basic")
+	{
+		Number* newNum = base->expo(exp);
+		Number* newNum2 = newNum->multiply(coef);
+		return newNum2;
+	}
+	return this;
 	}
 
 
@@ -171,17 +238,37 @@ string Exponent::getType(){
 }
 
 void Exponent::print(){
-	Number* j = simplifyHelper();
-	if (coef->getValue() ==! 1)
-	{
-		j->getCoef()->print();
-	}
-	j->getBase()->print();
-	if (exp ==! 1)
-	{
+	if (exp->getValue() == 1 && coef->getValue() != 1) {
+
+			if (coef->getValue() == -1)
+				cout << '-';
+			else
+			{
+				coef->print();
+				cout << "*";
+			}
+			base->print();
+		}
+	else if (coef->getValue() == 1 && exp->getValue() != 1) {
+		base->print();
 		cout << '^';
-		j->getExp()->print();
-	}
+		exp->print();
+		}
+	else if (coef->getValue() == 1 && exp->getValue() == 1) {
+		base->print();
+		}
+	else {
+			if (coef->getValue() == -1)
+				cout << '-';
+			else
+			{
+				coef->print();
+				cout << "*";
+			}
+			base->print();
+			cout << '^';
+			exp->print();
+		}
 }
 
 Number* Exponent::getNum(){
